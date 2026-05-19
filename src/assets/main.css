@@ -1,3 +1,10 @@
+/* ────────── Breakpoints ────────────────────────────────────
+   Mobile:  < 640px
+   Tablet:  640px – 900px
+   Desktop: > 900px  (navbar switches at 900px)
+   Wide:    > 1280px (container max-width)
+────────────────────────────────────────────────────────── */
+
 /* ────────── Tokens ────────── */
 :root {
   --bg: #080808;
