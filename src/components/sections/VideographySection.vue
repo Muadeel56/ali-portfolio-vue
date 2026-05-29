@@ -11,30 +11,104 @@ const stats = [
   { value: '4K', label: 'Native' },
 ]
 
+const s3 = 'https://ali-portfolio-vue.s3.ap-south-1.amazonaws.com/ali-portfolio-assets'
+
 const videos = ref([
   {
     id: 1,
     plate: 'Reel A · 01',
-    duration: '04:32',
     category: 'Wedding Films',
-    title: 'Wedding Cinematic',
-    sub: 'Lahore · 2025 · Anamorphic',
+    title: 'Premier Highlight',
+    sub: '2026 · Cinematic',
+    src: `${s3}/Premier+highlight+Final.mp4`,
   },
   {
     id: 2,
-    plate: 'Reel B · 02',
-    duration: '01:15',
-    category: 'Commercial',
-    title: 'Brand Promo — Luxe Co.',
-    sub: 'Karachi · 2026 · 35mm Cooke',
+    plate: 'Reel A · 02',
+    category: 'Wedding Films',
+    title: 'Kudsiya Song',
+    sub: '2026 · Cinematic',
+    src: `${s3}/Kudsiya+Song.mp4`,
   },
   {
     id: 3,
-    plate: 'Reel C · 03',
-    duration: '12:45',
+    plate: 'Reel A · 03',
+    category: 'Wedding Films',
+    title: '2nd Reel',
+    sub: '2026 · Cinematic',
+    src: `${s3}/2nd+Reel-.mp4`,
+  },
+  {
+    id: 4,
+    plate: 'Reel B · 04',
     category: 'Documentary',
-    title: 'Short Documentary',
-    sub: 'Islamabad · 2025 · Available light',
+    title: 'Talha Success Story',
+    sub: '2026 · Documentary',
+    src: `${s3}/Talha+Success+Story+final.mp4`,
+  },
+  {
+    id: 5,
+    plate: 'Reel B · 05',
+    category: 'Documentary',
+    title: 'Film',
+    sub: '2026 · Documentary',
+    src: `${s3}/1.mp4`,
+  },
+  {
+    id: 6,
+    plate: 'Reel B · 06',
+    category: 'Documentary',
+    title: 'Dr. Shandana',
+    sub: '2026 · Documentary',
+    src: `${s3}/Dr+Shandana+v4.mp4`,
+  },
+  {
+    id: 7,
+    plate: 'Reel B · 07',
+    category: 'Documentary',
+    title: 'Breast Cancer Awareness',
+    sub: '2026 · Documentary',
+    src: `${s3}/Breast+Cancer+re.mp4`,
+  },
+  {
+    id: 8,
+    plate: 'Reel B · 08',
+    category: 'Documentary',
+    title: 'Final Film',
+    sub: '2026 · Documentary',
+    src: `${s3}/Final+Video.mp4`,
+  },
+  {
+    id: 9,
+    plate: 'Reel C · 09',
+    category: 'Commercial',
+    title: 'Clothing Brand Shoot',
+    sub: '2026 · Commercial',
+    src: `${s3}/3.Shoot+for+Clothing+brand+.mp4`,
+  },
+  {
+    id: 10,
+    plate: 'Reel C · 10',
+    category: 'Commercial',
+    title: 'Shoot For Khals',
+    sub: '2026 · Commercial',
+    src: `${s3}/2.Shoot+For+khals+.mp4`,
+  },
+  {
+    id: 11,
+    plate: 'Reel C · 11',
+    category: 'Commercial',
+    title: 'Clothing Brand',
+    sub: '2026 · Commercial',
+    src: `${s3}/4.Clothing+Brand+.mp4`,
+  },
+  {
+    id: 12,
+    plate: 'Reel C · 12',
+    category: 'Commercial',
+    title: 'Emaaraat Developers',
+    sub: '2026 · Commercial',
+    src: `${s3}/5.Emaaraat+Developers+.mp4`,
   },
 ])
 
@@ -45,9 +119,10 @@ const showreel = ref({
 })
 
 const isPlaying = ref(false)
-const videoUrl = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'
+const activeVideo = ref(null)
 
-const play = () => {
+const play = (src = null) => {
+  activeVideo.value = src
   isPlaying.value = true
 }
 </script>
@@ -74,7 +149,7 @@ const play = () => {
       </div>
 
       <!-- Showreel player -->
-      <div class="vs__player reveal" @click="!isPlaying && play()">
+      <div class="vs__player reveal" @click="!isPlaying && play(videos[0].src)">
         <span class="vs__corner vs__corner--tl" aria-hidden="true" />
         <span class="vs__corner vs__corner--br" aria-hidden="true" />
 
@@ -100,15 +175,14 @@ const play = () => {
           </div>
         </Transition>
 
-        <!-- Iframe (post-play) -->
+        <!-- Video (post-play) -->
         <Transition name="fade">
-          <iframe
+          <video
             v-if="isPlaying"
             class="vs__iframe"
-            :src="videoUrl"
-            allow="autoplay; fullscreen"
-            allowfullscreen
-            title="Showreel"
+            :src="activeVideo"
+            autoplay
+            controls
           />
         </Transition>
 
@@ -131,6 +205,8 @@ const play = () => {
           role="button"
           tabindex="0"
           :aria-label="`Play ${video.title}`"
+          @click="play(video.src)"
+          @keydown.enter="play(video.src)"
         >
           <div class="vs__thumb">
             <span class="vs__plate" aria-hidden="true">← {{ video.plate }}</span>
