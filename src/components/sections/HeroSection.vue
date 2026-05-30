@@ -4,8 +4,8 @@ import AppButton from '../ui/AppButton.vue'
 
 const router = useRouter()
 
-const scrollTo = (id) => {
-  router.push({ path: '/', hash: `#${id}` })
+const scrollTo = (path) => {
+  router.push(path)
 }
 </script>
 
@@ -33,20 +33,20 @@ const scrollTo = (id) => {
         moments.
       </p>
       <div class="hero__ctas ctas">
-        <AppButton variant="primary" show-arrow @click="scrollTo('photography')">
+        <AppButton variant="primary" show-arrow @click="scrollTo('/photography')">
           View Work
         </AppButton>
         <AppButton
           variant="ghost"
           class="hero__cta-ghost"
-          @click="scrollTo('contact')"
+          @click="scrollTo('/contact')"
         >
           Get in Touch
         </AppButton>
         <AppButton
           variant="outline"
           class="hero__cta-outline"
-          @click="scrollTo('contact')"
+          @click="scrollTo('/contact')"
         >
           Get in Touch
         </AppButton>

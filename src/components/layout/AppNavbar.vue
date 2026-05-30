@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
 import AppButton from '../ui/AppButton.vue'
 
 const router = useRouter()
+const route = useRoute()
 const timeLine = ref('')
-const activeLink = ref('videography')
 const isScrolled = ref(false)
 
 const SCROLL_THRESHOLD = 80
@@ -23,28 +23,8 @@ const updateTime = () => {
 
 let timer
 
-const scrollTo = (id) => {
-  activeLink.value = id
-  router.push({ path: '/', hash: `#${id}` })
-}
-
 const onScroll = () => {
   isScrolled.value = window.scrollY >= SCROLL_THRESHOLD
-}
-
-const updateActiveFromScroll = () => {
-  const offset = 96
-  const ids = navLinks.map((link) => link.id)
-
-  for (let i = ids.length - 1; i >= 0; i--) {
-    const el = document.getElementById(ids[i])
-    if (el && el.getBoundingClientRect().top <= offset) {
-      activeLink.value = ids[i]
-      return
-    }
-  }
-
-  activeLink.value = 'videography'
 }
 
 onMounted(() => {
@@ -52,18 +32,11 @@ onMounted(() => {
   timer = setInterval(updateTime, 1000)
   onScroll()
   window.addEventListener('scroll', onScroll, { passive: true })
-  window.addEventListener('scroll', updateActiveFromScroll, { passive: true })
-
-  const hash = router.currentRoute.value.hash.replace('#', '')
-  if (hash && navLinks.some((link) => link.id === hash)) {
-    activeLink.value = hash
-  }
 })
 
 onUnmounted(() => {
   clearInterval(timer)
   window.removeEventListener('scroll', onScroll)
-  window.removeEventListener('scroll', updateActiveFromScroll)
 })
 </script>
 
@@ -72,15 +45,15 @@ onUnmounted(() => {
     class="nav"
     :class="isScrolled ? 'nav--scrolled' : 'nav--transparent'"
   >
-    <a href="/" class="nav__logo" @click.prevent="scrollTo('hero')">Ali's Portfolio</a>
+    <button type="button" class="nav__logo" @click="router.push('/')">Ali's Portfolio</button>
 
     <ul class="nav__links">
       <li v-for="link in navLinks" :key="link.id">
         <button
           type="button"
           class="nav__link"
-          :class="{ 'nav__link--active': activeLink === link.id }"
-          @click="scrollTo(link.id)"
+          :class="{ 'nav__link--active': route.path === link.path }"
+          @click="router.push(link.path)"
         >
           {{ link.label }}
         </button>
@@ -92,7 +65,7 @@ onUnmounted(() => {
         <b>Karachi · PKT</b>
         {{ timeLine }} — Available
       </div>
-      <AppButton variant="outline" class="btn--compact" @click="scrollTo('contact')">
+      <AppButton variant="outline" class="btn--compact" @click="router.push('/contact')">
         Book a Session
       </AppButton>
     </div>
@@ -143,6 +116,9 @@ onUnmounted(() => {
   user-select: none;
   white-space: nowrap;
   transition: color 200ms ease;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .nav__logo:hover {

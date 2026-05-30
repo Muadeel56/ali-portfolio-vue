@@ -1,12 +1,12 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
 import AppButton from '../ui/AppButton.vue'
 
 const router = useRouter()
+const route = useRoute()
 const isOpen = ref(false)
-const activeLink = ref('videography')
 const timeLine = ref('')
 
 const updateTime = () => {
@@ -29,9 +29,8 @@ const close = () => {
   isOpen.value = false
 }
 
-const scrollTo = (id) => {
-  activeLink.value = id
-  router.push({ path: '/', hash: `#${id}` })
+const navigate = (path) => {
+  router.push(path)
   close()
 }
 
@@ -47,11 +46,6 @@ onMounted(() => {
   updateTime()
   timer = setInterval(updateTime, 1000)
   window.addEventListener('keydown', onKeydown)
-
-  const hash = router.currentRoute.value.hash.replace('#', '')
-  if (hash && navLinks.some((link) => link.id === hash)) {
-    activeLink.value = hash
-  }
 })
 
 onUnmounted(() => {
@@ -64,7 +58,7 @@ onUnmounted(() => {
 <template>
   <header class="mobile-nav" :class="{ 'mobile-nav--open': isOpen }">
     <nav class="mobile-nav__bar">
-      <a href="/" class="mobile-nav__logo" @click.prevent="scrollTo('hero')">Ali's Portfolio</a>
+      <button type="button" class="mobile-nav__logo" @click="navigate('/')">Ali's Portfolio</button>
 
       <button
         type="button"
@@ -90,8 +84,8 @@ onUnmounted(() => {
             <button
               type="button"
               class="mobile-nav__link"
-              :class="{ 'mobile-nav__link--active': activeLink === link.id }"
-              @click="scrollTo(link.id)"
+              :class="{ 'mobile-nav__link--active': route.path === link.path }"
+              @click="navigate(link.path)"
             >
               {{ link.label }}
             </button>
@@ -99,7 +93,7 @@ onUnmounted(() => {
         </ul>
 
         <div class="mobile-nav__cta-wrap">
-          <AppButton variant="outline" class="mobile-nav__cta" show-arrow @click="scrollTo('contact')">
+          <AppButton variant="outline" class="mobile-nav__cta" show-arrow @click="navigate('/contact')">
             Book a Session
           </AppButton>
           <div class="mobile-nav__foot">
@@ -147,6 +141,10 @@ onUnmounted(() => {
   letter-spacing: 0.01em;
   white-space: nowrap;
   text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .mobile-nav__hamburger {
