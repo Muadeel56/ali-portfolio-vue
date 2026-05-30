@@ -23,17 +23,12 @@ const scrollTo = (path) => {
     <div class="hero__ovl hero__ovl--right" aria-hidden="true" />
 
     <div class="hero__content">
-      <p class="hero__label label">Visual Storyteller</p>
       <h1 class="hero__headline heading">
-        Frames That
-        <span class="hero__headline-accent">Breathe Stories</span>
+        I film the silence
+        <span class="hero__headline-accent">between motions</span>
       </h1>
-      <p class="hero__sub sub">
-        Photography &amp; Videography that captures emotion, depth, and the quiet beauty between
-        moments.
-      </p>
       <div class="hero__ctas ctas">
-        <AppButton variant="primary" show-arrow @click="scrollTo('/photography')">
+        <AppButton variant="primary" show-arrow @click="scrollTo('/videography')">
           View Work
         </AppButton>
         <AppButton

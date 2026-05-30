@@ -17,9 +17,10 @@ const videos = ref([
   {
     id: 1,
     plate: 'Reel A · 01',
-    category: 'Wedding Films',
-    title: 'Premier Highlight',
-    sub: '2026 · Cinematic',
+    category: 'Corporate',
+    title: 'Premier Highlights',
+    sub: '2026 · Corporate',
+    desc: 'Touchstone Communications Premier League — event highlight reel.',
     src: `${s3}/Premier+highlight+Final.mp4`,
   },
   {
@@ -28,14 +29,16 @@ const videos = ref([
     category: 'Wedding Films',
     title: 'Kudsiya Song',
     sub: '2026 · Cinematic',
+    desc: 'Bridal dress shoot — a cinematic tribute to tradition and elegance.',
     src: `${s3}/Kudsiya+Song.mp4`,
   },
   {
     id: 3,
     plate: 'Reel A · 03',
-    category: 'Wedding Films',
-    title: '2nd Reel',
-    sub: '2026 · Cinematic',
+    category: 'Commercial',
+    title: 'Second Reel — Khais',
+    sub: '2026 · Commercial',
+    desc: 'Follow-up reel for Khais beauty brand.',
     src: `${s3}/2nd+Reel-.mp4`,
   },
   {
@@ -44,6 +47,7 @@ const videos = ref([
     category: 'Documentary',
     title: 'Talha Success Story',
     sub: '2026 · Documentary',
+    desc: 'Success story of a Touchstone Communications employee.',
     src: `${s3}/Talha+Success+Story+final.mp4`,
   },
   {
@@ -52,6 +56,7 @@ const videos = ref([
     category: 'Documentary',
     title: 'Film',
     sub: '2026 · Documentary',
+    desc: 'A documentary short film.',
     src: `${s3}/1.mp4`,
   },
   {
@@ -60,6 +65,7 @@ const videos = ref([
     category: 'Documentary',
     title: 'Dr. Shandana',
     sub: '2026 · Documentary',
+    desc: 'Diagnostic center in the twin cities — a story of healthcare and community.',
     src: `${s3}/Dr+Shandana+v4.mp4`,
   },
   {
@@ -68,6 +74,7 @@ const videos = ref([
     category: 'Documentary',
     title: 'Breast Cancer Awareness',
     sub: '2026 · Documentary',
+    desc: 'Awareness campaign film.',
     src: `${s3}/Breast+Cancer+re.mp4`,
   },
   {
@@ -76,22 +83,25 @@ const videos = ref([
     category: 'Documentary',
     title: 'Final Film',
     sub: '2026 · Documentary',
+    desc: 'Documentary short.',
     src: `${s3}/Final+Video.mp4`,
   },
   {
     id: 9,
     plate: 'Reel C · 09',
     category: 'Commercial',
-    title: 'Clothing Brand Shoot',
+    title: 'Shoot for Clothing Brand',
     sub: '2026 · Commercial',
+    desc: 'Fashion campaign shoot for a clothing brand.',
     src: `${s3}/3.Shoot+for+Clothing+brand+.mp4`,
   },
   {
     id: 10,
     plate: 'Reel C · 10',
     category: 'Commercial',
-    title: 'Shoot For Khals',
+    title: 'Shoot for Khais',
     sub: '2026 · Commercial',
+    desc: 'Beauty brand product launch — two products, one story.',
     src: `${s3}/2.Shoot+For+khals+.mp4`,
   },
   {
@@ -100,14 +110,16 @@ const videos = ref([
     category: 'Commercial',
     title: 'Clothing Brand',
     sub: '2026 · Commercial',
+    desc: 'Lifestyle campaign for a clothing label.',
     src: `${s3}/4.Clothing+Brand+.mp4`,
   },
   {
     id: 12,
     plate: 'Reel C · 12',
     category: 'Commercial',
-    title: 'Emaaraat Developers',
+    title: 'Emaraat Developers',
     sub: '2026 · Commercial',
+    desc: 'Real estate shoot for Emaraat Developers.',
     src: `${s3}/5.Emaaraat+Developers+.mp4`,
   },
 ])
@@ -221,6 +233,7 @@ const play = (src = null) => {
             <p class="vs__cat">{{ video.category }}</p>
             <h4 class="vs__vtitle">{{ video.title }}</h4>
             <p class="vs__vsub">{{ video.sub }}</p>
+            <p class="vs__vdesc">{{ video.desc }}</p>
           </div>
         </div>
       </div>
@@ -684,6 +697,13 @@ const play = (src = null) => {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
+  margin: var(--space-02) 0 0;
+}
+
+.vs__vdesc {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-dim);
   margin: var(--space-02) 0 0;
 }
 

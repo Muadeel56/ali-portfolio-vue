@@ -7,27 +7,28 @@ import SectionLabel from '../ui/SectionLabel.vue'
 useScrollReveal('.contact-section .reveal')
 
 // ── EmailJS credentials — replace with real values from emailjs.com ──
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
+const EMAILJS_SERVICE_ID  = 'service_1paayws'
+const EMAILJS_TEMPLATE_ID = 'template_biy5qcs'
+const EMAILJS_PUBLIC_KEY  = 'TIMsqqL9WtG6PtJZG'
 
 const contactInfo = [
-  { label: 'Email',     href: 'mailto:czn@email.com',   text: 'czn@email.com'    },
-  { label: 'WhatsApp',  href: 'https://wa.me/923000000000', text: '+92 300 0000000' },
-  { label: 'Instagram', href: 'https://instagram.com/czn.visuals', text: '@czn.visuals'  },
+  { label: 'Email',     href: 'mailto:ah3781830@gmail.com',        text: 'ah3781830@gmail.com'  },
+  { label: 'WhatsApp',  href: 'https://wa.me/923320599106',        text: '+92 332 0599106'      },
+  { label: 'Instagram', href: 'https://instagram.com/malikali.legacy', text: '@malikali.legacy' },
 ]
 
 const socials = [
-  { label: 'Instagram', href: 'https://instagram.com/czn.visuals' },
-  { label: 'YouTube',   href: 'https://youtube.com'               },
-  { label: 'LinkedIn',  href: 'https://linkedin.com'              },
+  { label: 'Instagram', href: 'https://instagram.com/malikali.legacy' },
+  { label: 'LinkedIn',  href: 'https://linkedin.com/in/ali-hassan'    },
 ]
 
 const serviceOptions = [
   'Wedding Films',
-  'Portrait Photography',
-  'Brand & Commercial',
-  'Event Coverage',
+  'Corporate & Brand Films',
+  'Talking Head Videos',
+  'Short Form Content',
+  'Podcast Production',
+  'Aerial / Drone Coverage',
   'Custom Package',
 ]
 

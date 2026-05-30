@@ -14,8 +14,6 @@ const services = ref([
     title: 'Wedding Films',
     desc: 'Full-day coverage with cinematic storytelling. From morning prep to the last dance — captured with two operators, color-graded for screen and print.',
     tags: ['Cinematic highlight reel', 'Full ceremony & reception', 'Drone footage', 'Color graded edit'],
-    priceLabel: 'Starting from',
-    price: 'PKR 80,000',
   },
   {
     id: 2,
@@ -23,35 +21,34 @@ const services = ref([
     title: 'Corporate & Brand Films',
     desc: 'Visual narratives that elevate brand identity. From concept to final grade — stills and motion produced together, end-to-end.',
     tags: ['Concept development', 'Multiple revisions', 'Branded delivery', 'Usage rights'],
-    priceLabel: 'Starting from',
-    price: 'PKR 50,000',
   },
   {
     id: 3,
     num: '03',
-    title: 'Photography — Weddings & Events',
-    desc: 'Full-day photo coverage for weddings, nikkah ceremonies, and events. Quiet, considered direction — delivered as a curated online gallery.',
-    tags: ['Full-day coverage', '200+ edited images', 'Online gallery', 'Print-ready files'],
-    priceLabel: 'Starting from',
-    price: 'PKR 25,000',
+    title: 'Talking Head Videos',
+    desc: 'Professional on-camera interviews, spokesperson content, and thought leadership pieces — scripted or unscripted, studio or on-location.',
+    tags: ['Interview & spokesperson', 'Teleprompter support', 'Studio & on-location', 'Color graded edit'],
   },
   {
     id: 4,
     num: '04',
-    title: 'Commercial Photography',
-    desc: 'Product, lifestyle and editorial stills for brands. Studio or on-location — concept through delivery with full commercial license.',
-    tags: ['Product & lifestyle', 'Studio & on-location', 'Commercial license', 'Edited deliverables'],
-    priceLabel: 'Starting from',
-    price: 'PKR 35,000',
+    title: 'Short Form Content',
+    desc: 'Reels, TikToks, and social-first vertical videos built for engagement — fast-paced editing, trending formats, and platform-optimized delivery.',
+    tags: ['Reels & TikToks', 'Vertical format', 'Fast turnaround', 'Platform optimized'],
   },
   {
     id: 5,
     num: '05',
+    title: 'Podcast Production',
+    desc: 'Full video podcast setup with multi-camera recording, professional audio, and edited long-form and clip deliverables.',
+    tags: ['Multi-cam recording', 'Professional audio', 'Long-form edit', 'Highlight clips'],
+  },
+  {
+    id: 6,
+    num: '06',
     title: 'Aerial / Drone Coverage',
     desc: 'Licensed drone operator delivering cinematic 4K aerials for weddings, events, and brand productions. Available standalone or as an add-on.',
     tags: ['Licensed operator', '4K footage', 'Cinematic grading', 'Standalone or add-on'],
-    priceLabel: 'Starting from',
-    price: 'PKR 20,000',
   },
 ])
 
@@ -74,7 +71,7 @@ const scrollToContact = () => {
       <div class="services-section__head reveal">
         <div>
           <SectionLabel text="What I Offer" />
-          <h2 class="services-section__heading">Services &amp; <em>Pricing</em></h2>
+          <h2 class="services-section__heading"><em>Services</em></h2>
           <span class="services-section__rule" aria-hidden="true" />
         </div>
         <div class="services-section__meta" aria-hidden="true">
@@ -114,12 +111,7 @@ const scrollToContact = () => {
                 <div class="services-section__tags">
                   <span v-for="tag in service.tags" :key="tag" class="services-section__tag">{{ tag }}</span>
                 </div>
-                <!-- Price shown inline on mobile only -->
                 <div class="services-section__price-row-mobile">
-                  <div>
-                    <p class="services-section__price-label">{{ service.priceLabel }}</p>
-                    <p class="services-section__price">{{ service.price }}</p>
-                  </div>
                   <a
                     class="services-section__enquire"
                     href="#contact"
@@ -130,10 +122,8 @@ const scrollToContact = () => {
             </Transition>
           </div>
 
-          <!-- Price -->
+          <!-- Enquire -->
           <div class="services-section__right">
-            <p class="services-section__price-label">{{ service.priceLabel }}</p>
-            <p class="services-section__price">{{ service.price }}</p>
             <a
               class="services-section__enquire"
               href="#contact"

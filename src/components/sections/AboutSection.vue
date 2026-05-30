@@ -19,27 +19,18 @@ const scrollTo = (id) => {
       <div class="about-section__media reveal">
         <div class="about-section__frame-wrap">
           <div class="about-section__image">
-            <svg
-              class="about-section__icon"
-              viewBox="0 0 64 64"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.25"
-              aria-hidden="true"
-            >
-              <rect x="6" y="16" width="52" height="36" rx="2" />
-              <path d="M22 16l4-6h12l4 6" />
-              <circle cx="32" cy="34" r="11" />
-              <circle cx="32" cy="34" r="6" />
-              <circle cx="49" cy="22" r="1.5" fill="currentColor" />
-            </svg>
-            <span class="about-section__caption">— Plate · Self portrait</span>
+            <img
+              class="about-section__photo"
+              src="https://ali-portfolio-vue.s3.ap-south-1.amazonaws.com/ali-portfolio-assets/photos/ali-profile.jpeg"
+              alt="Ali — Photographer & Videographer"
+            />
+            <span class="about-section__caption">— Ali · Self portrait</span>
             <span class="about-section__corner about-section__corner--tl" aria-hidden="true" />
             <span class="about-section__corner about-section__corner--br" aria-hidden="true" />
           </div>
 
           <div class="about-section__badge">
-            <p class="about-section__badge-num">5+</p>
+            <p class="about-section__badge-num">6+</p>
             <p class="about-section__badge-lbl">Years</p>
           </div>
         </div>
@@ -56,8 +47,7 @@ const scrollTo = (id) => {
         <span class="about-section__rule" aria-hidden="true" />
 
         <p class="about-section__body">
-          I'm a photographer and videographer with a deep passion for visual storytelling. Every
-          frame I capture is intentional — a blend of technical precision and raw emotion.
+          Create and combine frames — every shot is intentional, a blend of technical precision and raw emotion.
         </p>
         <p class="about-section__body">
           Whether it's a wedding, a brand campaign, or a cinematic short — I bring a director's eye
@@ -65,15 +55,15 @@ const scrollTo = (id) => {
         </p>
 
         <div class="about-section__stats">
-          <span class="about-section__stat">150+ Weddings</span>
+          <span class="about-section__stat">200+ Weddings</span>
           <span class="about-section__stat-sep" aria-hidden="true">·</span>
-          <span class="about-section__stat">80+ Events</span>
+          <span class="about-section__stat">50+ Events</span>
           <span class="about-section__stat-sep" aria-hidden="true">·</span>
-          <span class="about-section__stat">5+ Years</span>
+          <span class="about-section__stat">6+ Years</span>
         </div>
 
         <div class="about-section__ctas">
-          <AppButton variant="outline" show-arrow @click="scrollTo('photography')">
+          <AppButton variant="outline" show-arrow @click="scrollTo('videography')">
             See My Work
           </AppButton>
           <AppButton variant="ghost" @click="scrollTo('contact')">Download Rate Card</AppButton>
@@ -156,14 +146,14 @@ const scrollTo = (id) => {
   pointer-events: none;
 }
 
-.about-section__icon {
+.about-section__photo {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 88px;
-  height: 88px;
-  color: #2a2a2a;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
 }
 
 .about-section__caption {
@@ -174,7 +164,7 @@ const scrollTo = (id) => {
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #2d2d2d;
+  color: rgba(255, 255, 255, 0.55);
   z-index: 2;
 }
 
@@ -328,11 +318,6 @@ const scrollTo = (id) => {
     bottom: 16px;
     left: 16px;
     font-size: 9px;
-  }
-
-  .about-section__icon {
-    width: 72px;
-    height: 72px;
   }
 
   .about-section__badge {
