@@ -1,141 +1,204 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
 import SectionLabel from '../ui/SectionLabel.vue'
 
 useScrollReveal('.videography-section .reveal')
 
-const stats = [
-  { value: '42', label: 'Films' },
-  { value: '09', label: 'Awards' },
-  { value: '4K', label: 'Native' },
-]
-
-const s3 = 'https://ali-portfolio-vue.s3.ap-south-1.amazonaws.com/ali-portfolio-assets'
+const s3 = import.meta.env.VITE_CDN_URL
 
 const videos = ref([
+  // ── Touchstone Communications ─────────────────────────────
   {
     id: 1,
-    plate: 'Reel A · 01',
-    category: 'Corporate',
-    title: 'Premier Highlights',
-    sub: '2026 · Corporate',
-    desc: 'Touchstone Communications Premier League — event highlight reel.',
+    category: 'Touchstone Communications',
+    tag: '2026 · Corporate Event',
+    title: 'Premier League Highlights',
+    sub: 'Corporate Event Film',
+    desc: 'Full event highlight reel from Touchstone Communications Premier League — capturing energy, moments, and brand identity.',
     src: `${s3}/Premier+highlight+Final.mp4`,
   },
   {
-    id: 2,
-    plate: 'Reel A · 02',
-    category: 'Wedding Films',
-    title: 'Kudsiya Song',
-    sub: '2026 · Cinematic',
-    desc: 'Bridal dress shoot — a cinematic tribute to tradition and elegance.',
-    src: `${s3}/Kudsiya+Song.mp4`,
-  },
-  {
-    id: 3,
-    plate: 'Reel A · 03',
-    category: 'Commercial',
-    title: 'Second Reel — Khais',
-    sub: '2026 · Commercial',
-    desc: 'Follow-up reel for Khais beauty brand.',
-    src: `${s3}/2nd+Reel-.mp4`,
-  },
-  {
     id: 4,
-    plate: 'Reel B · 04',
-    category: 'Documentary',
-    title: 'Talha Success Story',
-    sub: '2026 · Documentary',
-    desc: 'Success story of a Touchstone Communications employee.',
+    category: 'Touchstone Communications',
+    tag: '2026 · Corporate Documentary',
+    title: 'Employee Success Story',
+    sub: 'Corporate Documentary',
+    desc: 'A personal story of growth and ambition — documenting a Touchstone Communications employee\'s journey.',
     src: `${s3}/Talha+Success+Story+final.mp4`,
   },
   {
+    id: 8,
+    category: 'Touchstone Communications',
+    tag: '2026 · Brand Film',
+    title: 'Corporate Brand Film',
+    sub: 'Company Documentary',
+    desc: 'A cinematic brand documentary showcasing Touchstone Communications — culture, people, and purpose.',
+    src: `${s3}/Final+Video.mp4`,
+  },
+  // ── Clothing Brand ────────────────────────────────────────
+  {
     id: 5,
-    plate: 'Reel B · 05',
-    category: 'Documentary',
-    title: 'Film',
-    sub: '2026 · Documentary',
-    desc: 'A documentary short film.',
+    category: 'Clothing Brand',
+    tag: '2026 · Fashion Film',
+    title: 'Campaign Launch Film',
+    sub: 'Fashion Campaign',
+    desc: 'A cinematic launch film for a clothing brand — styled looks, movement, and mood in one cohesive cut.',
     src: `${s3}/1.mp4`,
   },
   {
+    id: 9,
+    category: 'Clothing Brand',
+    tag: '2026 · Brand Reel',
+    title: 'Brand Highlight Reel',
+    sub: 'Compiled Brand Reel',
+    desc: 'Final compiled highlight reel showcasing the best moments from the clothing brand shoot.',
+    src: `${s3}/Final+Reel+1.mp4`,
+  },
+  {
+    id: 11,
+    category: 'Clothing Brand',
+    tag: '2026 · Behind the Scenes',
+    title: 'Behind the Shoot',
+    sub: 'BTS Fashion Film',
+    desc: 'A behind-the-scenes look at the clothing brand shoot — raw, candid, and in motion.',
+    src: `${s3}/3.Shoot+for+Clothing+brand+.mp4`,
+  },
+  {
+    id: 13,
+    category: 'Clothing Brand',
+    tag: '2026 · Lifestyle',
+    title: 'Lifestyle Campaign',
+    sub: 'Lifestyle Fashion Film',
+    desc: 'Editorial lifestyle film for a clothing label — evoking aspiration through movement and environment.',
+    src: `${s3}/4.Clothing+Brand+.mp4`,
+  },
+  // ── Khais ─────────────────────────────────────────────────
+  {
+    id: 3,
+    category: 'Khais',
+    tag: '2026 · Brand Reel',
+    title: 'Khais — Brand Reel',
+    sub: 'Beauty Brand Film',
+    desc: 'Second campaign reel for Khais beauty brand — product story told through texture, light, and detail.',
+    src: `${s3}/2nd+Reel-.mp4`,
+  },
+  {
+    id: 12,
+    category: 'Khais',
+    tag: '2026 · Product Shoot',
+    title: 'Khais — Product Shoot',
+    sub: 'Beauty Product Film',
+    desc: 'Product launch film for Khais — two hero products, one visual story.',
+    src: `${s3}/2.Shoot+For+khais+.mp4`,
+  },
+  // ── Commercial ────────────────────────────────────────────
+  {
+    id: 10,
+    category: 'Commercial',
+    tag: '2026 · Promo Film',
+    title: 'Tax Smart — Promo Film',
+    sub: 'Commercial Promo',
+    desc: 'Promotional video for Tax Smart — clear messaging, clean visuals, and a strong brand voice.',
+    src: `${s3}/Tax+Smart.mp4`,
+  },
+  {
+    id: 14,
+    category: 'Commercial',
+    tag: '2026 · Real Estate',
+    title: 'Emarat Developers — Property Film',
+    sub: 'Real Estate Commercial',
+    desc: 'A property showcase film for Emarat Developers — architecture, space, and aspiration.',
+    src: `${s3}/5.Emaraat+Developers+.mp4`,
+  },
+  // ── Documentary ───────────────────────────────────────────
+  {
     id: 6,
-    plate: 'Reel B · 06',
     category: 'Documentary',
-    title: 'Dr. Shandana',
-    sub: '2026 · Documentary',
-    desc: 'Diagnostic center in the twin cities — a story of healthcare and community.',
+    tag: '2026 · Healthcare',
+    title: 'Dr. Shandana — Healthcare Story',
+    sub: 'Healthcare Documentary',
+    desc: 'A documentary portrait of a diagnostic center in the twin cities — healthcare, community, and compassion.',
     src: `${s3}/Dr+Shandana+v4.mp4`,
   },
   {
     id: 7,
-    plate: 'Reel B · 07',
     category: 'Documentary',
-    title: 'Breast Cancer Awareness',
-    sub: '2026 · Documentary',
-    desc: 'Awareness campaign film.',
+    tag: '2026 · Awareness',
+    title: 'Breast Cancer — Awareness Film',
+    sub: 'Awareness Campaign',
+    desc: 'A powerful awareness campaign film about breast cancer — stories that matter, told with care.',
     src: `${s3}/Breast+Cancer+re.mp4`,
   },
+  // ── Wedding Films ─────────────────────────────────────────
   {
-    id: 8,
-    plate: 'Reel B · 08',
-    category: 'Documentary',
-    title: 'Final Film',
-    sub: '2026 · Documentary',
-    desc: 'Documentary short.',
-    src: `${s3}/Final+Video.mp4`,
-  },
-  {
-    id: 9,
-    plate: 'Reel C · 09',
-    category: 'Commercial',
-    title: 'Shoot for Clothing Brand',
-    sub: '2026 · Commercial',
-    desc: 'Fashion campaign shoot for a clothing brand.',
-    src: `${s3}/3.Shoot+for+Clothing+brand+.mp4`,
-  },
-  {
-    id: 10,
-    plate: 'Reel C · 10',
-    category: 'Commercial',
-    title: 'Shoot for Khais',
-    sub: '2026 · Commercial',
-    desc: 'Beauty brand product launch — two products, one story.',
-    src: `${s3}/2.Shoot+For+khals+.mp4`,
-  },
-  {
-    id: 11,
-    plate: 'Reel C · 11',
-    category: 'Commercial',
-    title: 'Clothing Brand',
-    sub: '2026 · Commercial',
-    desc: 'Lifestyle campaign for a clothing label.',
-    src: `${s3}/4.Clothing+Brand+.mp4`,
-  },
-  {
-    id: 12,
-    plate: 'Reel C · 12',
-    category: 'Commercial',
-    title: 'Emaraat Developers',
-    sub: '2026 · Commercial',
-    desc: 'Real estate shoot for Emaraat Developers.',
-    src: `${s3}/5.Emaaraat+Developers+.mp4`,
+    id: 2,
+    category: 'Wedding Films',
+    tag: '2026 · Bridal Film',
+    title: 'Kudsiya — Bridal Film',
+    sub: 'Cinematic Bridal Shoot',
+    desc: 'A cinematic tribute to tradition and elegance — bridal dress shoot capturing grace, detail, and emotion.',
+    src: `${s3}/Kudsiya+Song.mp4`,
   },
 ])
 
 const showreel = ref({
-  hud: { left: 'Reel · 2026', leftSub: 'ARRI Alexa Mini · Cooke S4', right: '04:32 · 4K', rightSub: '● Rec · 23.976' },
+  hud: { left: 'Ali Hassan', leftSub: 'Rawalpindi, Pakistan', right: 'Remote Editing', rightSub: 'Available Worldwide' },
   title: 'A year, in motion.',
-  meta: '2025 – 2026 reel cut',
+  meta: 'Selected Works · 2025–2026',
 })
 
+const categoryOrder = [
+  'Touchstone Communications',
+  'Clothing Brand',
+  'Khais',
+  'Commercial',
+  'Documentary',
+  'Wedding Films',
+]
+
+const groupedVideos = computed(() => {
+  const map = {}
+  for (const v of videos.value) {
+    if (!map[v.category]) map[v.category] = []
+    map[v.category].push(v)
+  }
+  return categoryOrder.filter(c => map[c]).map(c => ({ category: c, items: map[c] }))
+})
+
+// ── Lazy loading via IntersectionObserver ─────────────────
+const visibleIds = ref(new Set())
+let observer = null
+
+onMounted(() => {
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = Number(entry.target.dataset.id)
+        visibleIds.value = new Set([...visibleIds.value, id])
+        observer.unobserve(entry.target)
+      }
+    })
+  }, { rootMargin: '300px' })
+
+  document.querySelectorAll('.vs__card[data-id]').forEach(el => observer.observe(el))
+})
+
+onUnmounted(() => observer?.disconnect())
+
+// ── Player ────────────────────────────────────────────────
+const playerRef = ref(null)
 const isPlaying = ref(false)
+const isBuffering = ref(false)
 const activeVideo = ref(null)
 
 const play = (src = null) => {
   activeVideo.value = src
   isPlaying.value = true
+  isBuffering.value = true
+  nextTick(() => {
+    playerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
 }
 </script>
 
@@ -146,22 +209,16 @@ const play = (src = null) => {
       <!-- Header -->
       <div class="vs__head reveal">
         <div>
-          <SectionLabel text="Showreel" />
-          <h2 class="vs__heading">Videography</h2>
+          <SectionLabel text="Work" />
+          <h2 class="vs__heading">Selected Work</h2>
         </div>
         <div class="vs__head-right">
           <p class="vs__sub">Motion pictures that move people. Each film crafted with intention — from pre-production to the final color grade.</p>
-          <div class="vs__stats">
-            <div v-for="s in stats" :key="s.label">
-              <b>{{ s.value }}</b>
-              <span>{{ s.label }}</span>
-            </div>
-          </div>
         </div>
       </div>
 
       <!-- Showreel player -->
-      <div class="vs__player reveal" @click="!isPlaying && play(videos[0].src)">
+      <div ref="playerRef" class="vs__player reveal" @click="!isPlaying && play(videos[0].src)">
         <span class="vs__corner vs__corner--tl" aria-hidden="true" />
         <span class="vs__corner vs__corner--br" aria-hidden="true" />
 
@@ -195,7 +252,17 @@ const play = (src = null) => {
             :src="activeVideo"
             autoplay
             controls
+            @waiting="isBuffering = true"
+            @playing="isBuffering = false"
+            @canplay="isBuffering = false"
           />
+        </Transition>
+
+        <!-- Buffering spinner -->
+        <Transition name="fade">
+          <div v-if="isPlaying && isBuffering" class="vs__buffering" aria-label="Loading video">
+            <span class="vs__spinner" aria-hidden="true" />
+          </div>
         </Transition>
 
         <!-- HUD bottom -->
@@ -208,32 +275,46 @@ const play = (src = null) => {
         </div>
       </div>
 
-      <!-- Video cards grid -->
-      <div class="vs__grid reveal">
-        <div
-          v-for="video in videos"
-          :key="video.id"
-          class="vs__card"
-          role="button"
-          tabindex="0"
-          :aria-label="`Play ${video.title}`"
-          @click="play(video.src)"
-          @keydown.enter="play(video.src)"
-        >
-          <div class="vs__thumb">
-            <span class="vs__plate" aria-hidden="true">← {{ video.plate }}</span>
-            <div class="vs__vplay" aria-hidden="true">
-              <span class="vs__vtri" />
+      <!-- Video cards grouped by category -->
+      <div v-for="group in groupedVideos" :key="group.category" class="vs__group reveal">
+        <div class="vs__group-header">
+          <span class="vs__group-label">{{ group.category }}</span>
+          <span class="vs__group-count">{{ String(group.items.length).padStart(2, '0') }}</span>
+        </div>
+        <div class="vs__grid">
+          <div
+            v-for="video in group.items"
+            :key="video.id"
+            class="vs__card"
+            role="button"
+            tabindex="0"
+            :data-id="video.id"
+            :aria-label="`Play ${video.title}`"
+            @click="play(video.src)"
+            @keydown.enter="play(video.src)"
+          >
+            <div class="vs__thumb">
+              <video
+                v-if="visibleIds.has(video.id)"
+                class="vs__thumb-video"
+                :src="video.src"
+                preload="metadata"
+                muted
+                playsinline
+                @loadedmetadata="(e) => { e.target.currentTime = 1 }"
+              />
+              <span class="vs__plate" aria-hidden="true">{{ video.tag }}</span>
+              <div class="vs__vplay" aria-hidden="true">
+                <span class="vs__vtri" />
+              </div>
+              <span class="vs__pcorner vs__pcorner--tl" aria-hidden="true" />
+              <span class="vs__pcorner vs__pcorner--br" aria-hidden="true" />
             </div>
-            <span class="vs__duration">{{ video.duration }}</span>
-            <span class="vs__pcorner vs__pcorner--tl" aria-hidden="true" />
-            <span class="vs__pcorner vs__pcorner--br" aria-hidden="true" />
-          </div>
-          <div class="vs__vmeta">
-            <p class="vs__cat">{{ video.category }}</p>
-            <h4 class="vs__vtitle">{{ video.title }}</h4>
-            <p class="vs__vsub">{{ video.sub }}</p>
-            <p class="vs__vdesc">{{ video.desc }}</p>
+            <div class="vs__vmeta">
+              <h4 class="vs__vtitle">{{ video.title }}</h4>
+              <p class="vs__vsub">{{ video.sub }}</p>
+              <p class="vs__vdesc">{{ video.desc }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -242,11 +323,8 @@ const play = (src = null) => {
       <div class="vs__foot reveal">
         <span class="vs__count">
           <b>{{ String(videos.length).padStart(2, '0') }}</b>
-          &nbsp;/&nbsp; 42 films shown
+          &nbsp;films
         </span>
-        <button class="btn btn-outline">
-          Browse Full Reel <span aria-hidden="true">→</span>
-        </button>
       </div>
 
     </div>
@@ -275,7 +353,6 @@ const play = (src = null) => {
 
 .vs__heading {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: clamp(2rem, 4vw, 3.25rem);
   line-height: 1.1;
@@ -305,7 +382,6 @@ const play = (src = null) => {
 .vs__stats b {
   display: block;
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: 1.375rem;
   color: var(--gold);
@@ -323,6 +399,7 @@ const play = (src = null) => {
 .vs__player {
   position: relative;
   margin-top: var(--space-07);
+  scroll-margin-top: 80px;
   aspect-ratio: 16 / 9;
   background: radial-gradient(80% 70% at 50% 40%, #161412 0%, #0f0f0f 60%, #0a0a0a 100%);
   border: 1px solid var(--border);
@@ -420,7 +497,6 @@ const play = (src = null) => {
 
 .vs__reel-title {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: clamp(1rem, 2.5vw, 2rem);
   color: var(--text);
@@ -509,6 +585,30 @@ const play = (src = null) => {
   line-height: 1;
 }
 
+/* Buffering spinner */
+.vs__buffering {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.vs__spinner {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(201, 168, 76, 0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: vs-spin 0.8s linear infinite;
+}
+
+@keyframes vs-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Iframe fills entire player once active */
 .vs__iframe {
   position: absolute;
@@ -519,12 +619,39 @@ const play = (src = null) => {
   z-index: 2;
 }
 
+/* ─── Category groups ──────────────────────────────────────── */
+.vs__group {
+  margin-top: var(--space-07);
+}
+
+.vs__group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-04);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-05);
+}
+
+.vs__group-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.vs__group-count {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
 /* ─── Video grid ───────────────────────────────────────────── */
 .vs__grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-07);
-  margin-top: var(--space-05);
 }
 
 .vs__card {
@@ -543,6 +670,15 @@ const play = (src = null) => {
   background: radial-gradient(80% 60% at 50% 40%, #232120 0%, #1a1a1a 60%, #131313 100%);
   overflow: hidden;
   isolation: isolate;
+}
+
+.vs__thumb-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .vs__thumb::before {
@@ -617,9 +753,9 @@ const play = (src = null) => {
   top: 10px;
   left: 10px;
   font-size: 8px;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #2d2d2d;
+  color: rgba(201, 168, 76, 0.7);
   z-index: 3;
 }
 
@@ -679,7 +815,6 @@ const play = (src = null) => {
 
 .vs__vtitle {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 400;
   font-size: 1.125rem;
   line-height: 1.3;

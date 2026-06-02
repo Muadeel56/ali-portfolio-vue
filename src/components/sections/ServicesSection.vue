@@ -11,44 +11,44 @@ const services = ref([
   {
     id: 1,
     num: '01',
-    title: 'Wedding Films',
-    desc: 'Full-day coverage with cinematic storytelling. From morning prep to the last dance — captured with two operators, color-graded for screen and print.',
-    tags: ['Cinematic highlight reel', 'Full ceremony & reception', 'Drone footage', 'Color graded edit'],
+    title: 'Wedding Film Edit',
+    desc: 'Raw footage transformed into a cinematic wedding film — highlights, full ceremony cuts, and reception edits. Color graded, synced to music, and delivered in broadcast-ready formats.',
+    tags: ['Highlight reel', 'Full ceremony cut', 'Color grading', 'Music sync'],
   },
   {
     id: 2,
     num: '02',
-    title: 'Corporate & Brand Films',
-    desc: 'Visual narratives that elevate brand identity. From concept to final grade — stills and motion produced together, end-to-end.',
-    tags: ['Concept development', 'Multiple revisions', 'Branded delivery', 'Usage rights'],
+    title: 'Corporate & Brand Video Edit',
+    desc: 'Polished edits for brand films, product launches, and corporate presentations. Clean pacing, branded motion graphics, and multiple revision rounds included.',
+    tags: ['Brand films', 'Motion graphics', 'Multiple revisions', 'Branded delivery'],
   },
   {
     id: 3,
     num: '03',
-    title: 'Talking Head Videos',
-    desc: 'Professional on-camera interviews, spokesperson content, and thought leadership pieces — scripted or unscripted, studio or on-location.',
-    tags: ['Interview & spokesperson', 'Teleprompter support', 'Studio & on-location', 'Color graded edit'],
+    title: 'Short Form Content Edit',
+    desc: 'Reels, TikToks, and social-first vertical cuts built for engagement — fast-paced editing, trending formats, captions, and platform-optimised delivery.',
+    tags: ['Reels & TikToks', 'Vertical format', 'Captions & text', 'Fast turnaround'],
   },
   {
     id: 4,
     num: '04',
-    title: 'Short Form Content',
-    desc: 'Reels, TikToks, and social-first vertical videos built for engagement — fast-paced editing, trending formats, and platform-optimized delivery.',
-    tags: ['Reels & TikToks', 'Vertical format', 'Fast turnaround', 'Platform optimized'],
+    title: 'Documentary & Long-Form Edit',
+    desc: 'Story-driven editing for documentaries, interviews, and long-form content. Narrative structure, pacing, sound design, and colour work handled end-to-end.',
+    tags: ['Story structure', 'Interview cutting', 'Sound design', 'Colour grade'],
   },
   {
     id: 5,
     num: '05',
-    title: 'Podcast Production',
-    desc: 'Full video podcast setup with multi-camera recording, professional audio, and edited long-form and clip deliverables.',
-    tags: ['Multi-cam recording', 'Professional audio', 'Long-form edit', 'Highlight clips'],
+    title: 'Color Grading',
+    desc: 'Standalone colour grading for footage already shot. LUT creation, scene-by-scene correction, and cinematic grade delivery — compatible with Premiere, Resolve, and Final Cut.',
+    tags: ['Scene correction', 'LUT creation', 'Cinematic grade', 'All NLE formats'],
   },
   {
     id: 6,
     num: '06',
-    title: 'Aerial / Drone Coverage',
-    desc: 'Licensed drone operator delivering cinematic 4K aerials for weddings, events, and brand productions. Available standalone or as an add-on.',
-    tags: ['Licensed operator', '4K footage', 'Cinematic grading', 'Standalone or add-on'],
+    title: 'Podcast Video Edit',
+    desc: 'Multi-camera podcast edits with jump-cut cleaning, lower thirds, intro/outro, and highlight clip exports for social distribution.',
+    tags: ['Multi-cam sync', 'Jump-cut clean', 'Lower thirds', 'Highlight clips'],
   },
 ])
 
@@ -75,8 +75,8 @@ const scrollToContact = () => {
           <span class="services-section__rule" aria-hidden="true" />
         </div>
         <div class="services-section__meta" aria-hidden="true">
-          <div><b>Lahore · PK</b>Studio &amp; on-location</div>
-          <div><b>Worldwide</b>Available for travel</div>
+          <div><b>Rawalpindi · PK</b>Remote delivery</div>
+          <div><b>Worldwide</b>Clients accepted globally</div>
           <div><b>2026</b>Booking now open</div>
         </div>
       </div>
@@ -143,14 +143,11 @@ const scrollToContact = () => {
         <span class="services-section__blabel">Custom Packages Available</span>
         <h3 class="services-section__bhead">Have a unique project in mind?</h3>
         <p class="services-section__bsub">
-          Multi-day shoots, retainers, hybrid photo + video productions — every brief gets a tailored quote within 24 hours.
+          Multi-video retainers, ongoing brand partnerships, or one-off edits — every brief gets a tailored quote within 24 hours.
         </p>
         <div class="services-section__bbtns">
           <button class="btn btn-primary" @click="scrollToContact">
             Let's Talk <span aria-hidden="true">→</span>
-          </button>
-          <button class="btn btn-outline">
-            Download Rate Card
           </button>
         </div>
       </div>
@@ -197,7 +194,6 @@ const scrollToContact = () => {
 }
 
 .services-section__heading em {
-  font-style: italic;
   color: var(--gold);
 }
 
@@ -282,7 +278,6 @@ const scrollToContact = () => {
 /* ─── Body ─────────────────────────────────────────────────── */
 .services-section__title {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   line-height: 1.1;
@@ -493,7 +488,6 @@ const scrollToContact = () => {
 
 .services-section__bhead {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   line-height: 1.15;

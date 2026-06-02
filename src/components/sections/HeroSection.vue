@@ -24,8 +24,8 @@ const scrollTo = (path) => {
 
     <div class="hero__content">
       <h1 class="hero__headline heading">
-        I film the silence
-        <span class="hero__headline-accent">between motions</span>
+        I film the silence                                                         
+        <span class="hero__headline-accent">between emotions</span>
       </h1>
       <div class="hero__ctas ctas">
         <AppButton variant="primary" show-arrow @click="scrollTo('/videography')">
@@ -54,10 +54,10 @@ const scrollTo = (path) => {
     </div>
 
     <div class="hero__corner-l t-mono" aria-hidden="true">
-      <b>Reel · 2026</b>
-      01 / 12 — Atlantic, dawn
+      <b>Rawalpindi · Pakistan</b>
+      Remote · Worldwide
     </div>
-    <div class="hero__corner-r" aria-hidden="true">Photography · Videography</div>
+    <div class="hero__corner-r" aria-hidden="true">Videography · Editing</div>
   </section>
 </template>
 
@@ -208,7 +208,6 @@ const scrollTo = (path) => {
 
 .hero__headline-accent {
   display: block;
-  font-style: italic;
   color: var(--gold);
   font-weight: 700;
 }

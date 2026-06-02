@@ -62,8 +62,8 @@ onUnmounted(() => {
 
     <div class="nav__right">
       <div class="nav__time">
-        <b>Karachi · PKT</b>
-        {{ timeLine }} — Available
+        <b>Rawalpindi · PKT</b>
+        {{ timeLine }} — Remote
       </div>
       <AppButton variant="outline" class="btn--compact" @click="router.push('/contact')">
         Book a Session
@@ -105,7 +105,6 @@ onUnmounted(() => {
 .nav__logo {
   justify-self: start;
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: 22px;
   line-height: 1;

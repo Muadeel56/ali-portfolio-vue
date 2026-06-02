@@ -5,6 +5,7 @@ import SectionLabel from '../ui/SectionLabel.vue'
 import AppButton from '../ui/AppButton.vue'
 
 const router = useRouter()
+const cdnUrl = import.meta.env.VITE_CDN_URL
 
 useScrollReveal('.about-section .reveal')
 
@@ -21,7 +22,7 @@ const scrollTo = (id) => {
           <div class="about-section__image">
             <img
               class="about-section__photo"
-              src="https://ali-portfolio-vue.s3.ap-south-1.amazonaws.com/ali-portfolio-assets/photos/ali-profile.jpeg"
+              :src="`${cdnUrl}/photos/ali-profile.jpeg`"
               alt="Ali — Photographer & Videographer"
             />
             <span class="about-section__caption">— Ali · Self portrait</span>
@@ -40,18 +41,20 @@ const scrollTo = (id) => {
         <SectionLabel text="About" />
 
         <h2 class="about-section__heading">
-          Frames That
-          <em>Feel</em>
+          Create and combine
+          <em>frames</em>
         </h2>
 
         <span class="about-section__rule" aria-hidden="true" />
 
         <p class="about-section__body">
-          Create and combine frames — every shot is intentional, a blend of technical precision and raw emotion.
+          Every frame is a decision. I work at the intersection of technical craft and raw emotion —
+          composing shots that don't just document a moment, but make you feel it.
         </p>
         <p class="about-section__body">
-          Whether it's a wedding, a brand campaign, or a cinematic short — I bring a director's eye
-          and a documentarian's patience to every project.
+          From intimate weddings and brand campaigns to cinematic short films, I bring a director's
+          eye and a documentarian's patience to every project. Six years in, the obsession with
+          light, motion, and storytelling hasn't dimmed.
         </p>
 
         <div class="about-section__stats">
@@ -66,7 +69,6 @@ const scrollTo = (id) => {
           <AppButton variant="outline" show-arrow @click="scrollTo('videography')">
             See My Work
           </AppButton>
-          <AppButton variant="ghost" @click="scrollTo('contact')">Download Rate Card</AppButton>
         </div>
       </div>
     </div>
@@ -205,7 +207,6 @@ const scrollTo = (id) => {
 
 .about-section__badge-num {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: 32px;
   line-height: 1;
@@ -237,7 +238,6 @@ const scrollTo = (id) => {
 
 .about-section__heading em {
   display: block;
-  font-style: italic;
   color: var(--gold);
   font-weight: 700;
 }

@@ -19,7 +19,7 @@ const contactInfo = [
 
 const socials = [
   { label: 'Instagram', href: 'https://instagram.com/malikali.legacy' },
-  { label: 'LinkedIn',  href: 'https://linkedin.com/in/ali-hassan'    },
+  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/ali-hassan-0a978821b/'    },
 ]
 
 const serviceOptions = [
@@ -240,7 +240,7 @@ const submit = async () => {
           <span class="cs__dot" aria-hidden="true" />
           <b>Available</b> · Booking Q1 – Q2 2026
         </span>
-        <span class="cs__foot-tagline">Photography · Videography · Visual Storytelling</span>
+        <span class="cs__foot-tagline">Videography · Editing · Visual Storytelling</span>
       </div>
 
     </div>
@@ -310,7 +310,6 @@ const submit = async () => {
 }
 
 .cs__heading em {
-  font-style: italic;
   color: var(--gold);
 }
 
@@ -443,7 +442,6 @@ const submit = async () => {
 
 .cs__form-title {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: 1.375rem;
   color: var(--text);
@@ -488,7 +486,6 @@ const submit = async () => {
   top: 0;
   left: -28px;
   font-family: var(--serif);
-  font-style: italic;
   font-size: 11px;
   color: var(--muted);
   line-height: 1;
@@ -655,7 +652,6 @@ const submit = async () => {
 
 .cs__success-title {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: 1.5rem;
   color: var(--text);

@@ -17,7 +17,7 @@
   --text-dim: #a09a90;
   --white: #ffffff;
 
-  --serif: 'Playfair Display', 'Times New Roman', serif;
+  --serif: 'Bebas Neue', 'Impact', sans-serif;
   --sans: 'DM Sans', -apple-system, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
 
@@ -36,6 +36,21 @@
   --nav-height-desktop: 72px;
   --nav-height-mobile: 64px;
   --transition-base: 200ms ease;
+}
+
+/* ────────── Bebas Neue — no italic, single weight ────────── */
+/* Override all component-level italic/weight on serif elements */
+h1, h2, h3, h4, h5, h6,
+[style*="--serif"],
+.vs__heading, .vs__reel-title, .vs__vtitle, .vs__bhead,
+.about-section__heading, .about-section__heading em,
+.services-section__heading, .services-section__heading em,
+.services-section__title, .services-section__bhead,
+.hs__title, .hs__title em,
+.ps__heading, .ps__heading em,
+.cs__heading, .cs__heading em,
+.nav__logo {
+  font-style: normal !important;
 }
 
 /* ────────── Reset & base ────────── */
@@ -83,39 +98,39 @@ a {
 /* ────────── Typography ────────── */
 .t-display-hero {
   font-family: var(--serif);
-  font-style: italic;
-  font-weight: 700;
+  font-style: normal;
+  font-weight: 400;
   font-size: clamp(2.75rem, 8vw, 80px);
-  line-height: 1.05;
+  line-height: 1;
   color: var(--text);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
   margin: 0;
 }
 
 .t-display-hero em {
-  font-style: italic;
+  font-style: normal;
 }
 
 .t-display-h2 {
   font-family: var(--serif);
-  font-style: italic;
-  font-weight: 700;
+  font-style: normal;
+  font-weight: 400;
   font-size: clamp(2rem, 5vw, 52px);
-  line-height: 1.1;
+  line-height: 1;
   color: var(--text);
   margin: 0;
 }
 
 .t-display-h2 em {
-  font-style: italic;
+  font-style: normal;
 }
 
 .t-display-h3 {
   font-family: var(--serif);
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
   font-size: clamp(1.5rem, 3vw, 32px);
-  line-height: 1.2;
+  line-height: 1;
   color: var(--text);
   margin: 0;
 }

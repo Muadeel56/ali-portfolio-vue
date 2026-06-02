@@ -297,7 +297,6 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
 .photography-section__heading {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: clamp(2rem, 4vw, 3.25rem);
   line-height: 1.1;
@@ -515,7 +514,6 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
 .photography-section__tile-title {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 400;
   font-size: 14px;
   line-height: 1.2;
@@ -639,7 +637,6 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
 .photography-lightbox__title {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 400;
   font-size: 1.5rem;
   color: var(--text);

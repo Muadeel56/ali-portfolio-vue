@@ -133,7 +133,6 @@ onUnmounted(() => {
 
 .mobile-nav__logo {
   font-family: var(--serif);
-  font-style: italic;
   font-weight: 700;
   font-size: 20px;
   line-height: 1;
