@@ -59,7 +59,7 @@ const toggle = (i) => {
 }
 
 const scrollToContact = () => {
-  router.push({ path: '/', hash: '#contact' })
+  router.push('/contact')
 }
 </script>
 
@@ -114,7 +114,7 @@ const scrollToContact = () => {
                 <div class="services-section__price-row-mobile">
                   <a
                     class="services-section__enquire"
-                    href="#contact"
+                    href="/contact"
                     @click.stop="scrollToContact"
                   >Enquire →</a>
                 </div>
@@ -126,7 +126,7 @@ const scrollToContact = () => {
           <div class="services-section__right">
             <a
               class="services-section__enquire"
-              href="#contact"
+              href="/contact"
               @click.stop="scrollToContact"
             >Enquire →</a>
           </div>

@@ -235,7 +235,7 @@ const submit = async () => {
 
       <!-- ── Footer bar ──────────────────────────────── -->
       <div class="cs__foot reveal">
-        <span class="cs__foot-copy">© 2025 CZN Visuals. All Rights Reserved.</span>
+        <span class="cs__foot-copy">© 2026 Ali's Portfolio. All Rights Reserved.</span>
         <span class="cs__foot-status">
           <span class="cs__dot" aria-hidden="true" />
           <b>Available</b> · Booking Q1 – Q2 2026

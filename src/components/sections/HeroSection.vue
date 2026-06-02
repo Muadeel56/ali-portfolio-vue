@@ -48,11 +48,6 @@ const scrollTo = (path) => {
       </div>
     </div>
 
-    <div class="hero__scroll" aria-hidden="true">
-      <span class="hero__scroll-label">Scroll</span>
-      <span class="hero__scroll-line" />
-    </div>
-
     <div class="hero__corner-l t-mono" aria-hidden="true">
       <b>Rawalpindi · Pakistan</b>
       Remote · Worldwide
@@ -233,48 +228,6 @@ const scrollTo = (path) => {
   display: none;
 }
 
-/* ── Scroll indicator ── */
-.hero__scroll {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  pointer-events: none;
-}
-
-.hero__scroll-label {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.hero__scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(180deg, var(--gold) 0%, rgba(201, 168, 76, 0) 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.hero__scroll-line::after {
-  content: '';
-  position: absolute;
-  top: -40%;
-  left: 0;
-  width: 1px;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(232, 201, 122, 0) 0%, var(--gold-light) 100%);
-  animation: scrollPulse 2.4s ease-in-out infinite;
-}
-
 /* ── Bottom corners (desktop) ── */
 .hero__corner-l {
   position: absolute;
@@ -314,23 +267,6 @@ const scrollTo = (path) => {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes scrollPulse {
-  0% {
-    top: -40%;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
   }
 }
 
@@ -424,50 +360,13 @@ const scrollTo = (path) => {
     display: inline-flex;
   }
 
-  .hero__scroll {
-    bottom: 32px;
-    gap: 12px;
-  }
-
-  .hero__scroll-label {
-    font-size: 9px;
-  }
-
-  .hero__scroll-line {
-    height: 28px;
-  }
-
-  .hero__scroll-line::after {
-    top: -50%;
-    height: 50%;
-  }
-}
-
-@media (max-width: 900px) {
-  @keyframes scrollPulse {
-    0% {
-      top: -50%;
-      opacity: 0;
-    }
-    20% {
-      opacity: 1;
-    }
-    80% {
-      opacity: 1;
-    }
-    100% {
-      top: 100%;
-      opacity: 0;
-    }
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .label,
   .heading,
   .sub,
-  .ctas,
-  .hero__scroll-line::after {
+  .ctas {
     animation: none !important;
   }
 }

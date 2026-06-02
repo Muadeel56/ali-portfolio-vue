@@ -9,8 +9,8 @@ const cdnUrl = import.meta.env.VITE_CDN_URL
 
 useScrollReveal('.about-section .reveal')
 
-const scrollTo = (id) => {
-  router.push({ path: '/', hash: `#${id}` })
+const scrollTo = (path) => {
+  router.push(path)
 }
 </script>
 
@@ -66,7 +66,7 @@ const scrollTo = (id) => {
         </div>
 
         <div class="about-section__ctas">
-          <AppButton variant="outline" show-arrow @click="scrollTo('videography')">
+          <AppButton variant="outline" show-arrow @click="scrollTo('/videography')">
             See My Work
           </AppButton>
         </div>
