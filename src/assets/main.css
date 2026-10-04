@@ -150,6 +150,14 @@
   --dur-cut-out: 150ms;         /* route change: old page fades to black */
   --dur-cut-hold: 80ms;         /* route change: hold on black before the new page cuts in */
   --dur-stagger: 80ms;          /* delay between lines in a staggered reveal */
+  --dur-letterbox: 200ms;       /* player modal: letterbox bars slide in to frame the stage */
+
+  /* shape */
+  --radius-phone: 12px;         /* phone-shaped (9:16) film cards on /work */
+
+  /* custom cursor (AppCursor.vue) */
+  --cursor-ring: 12px;
+  --cursor-disc: 72px;
 
   /* layout */
   --gutter: 16px;
@@ -184,6 +192,16 @@ body {
   margin: 0;
   padding: 0;
   background: var(--bg);
+}
+
+/* The player modal locks body scroll; keep the scrollbar's space so the page doesn't shift sideways */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* The custom cursor replaces the system one only over its labelled targets (see AppCursor.vue) */
+.has-cursor [data-cursor] {
+  cursor: none;
 }
 
 body {
@@ -380,6 +398,11 @@ a {
 
 .section--flush-top {
   padding-top: 0;
+}
+
+/* First section under a PageHero: the hero's rule already separates them */
+.section--after-hero {
+  padding-top: var(--space-08);
 }
 
 .container {

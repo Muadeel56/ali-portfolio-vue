@@ -1,11 +1,11 @@
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { vReleaseMedia } from '@/composables/useVideoPreview.js'
 import { cdn, findVideo, showreel, posterAttrs, isSlowConnection, prefersReducedMotion } from '@/data/videos.js'
 import AppButton from '../ui/AppButton.vue'
 import VideoPlayerModal from '../ui/VideoPlayerModal.vue'
 
-const reelVideo = findVideo(showreel.videoId)
+const reelVideo = findVideo(showreel.videoSlug)
 // The loop's first frame once it exists, so the poster → video fade is seamless.
 const poster = posterAttrs(showreel.loopPoster ? { poster: showreel.loopPoster } : reelVideo)
 // Dedicated silent loop once it exists; the reel's 5s preview until then.
@@ -14,24 +14,65 @@ const loopPath = showreel.loop ?? reelVideo.preview
 // ── Background loop ───────────────────────────────────────
 // The poster is the LCP element. The <video> only exists after the page has loaded and gone idle,
 // and never for reduced motion, data saver or slow connections.
+// It fades in once the headline's last line has landed and the video can play, whichever is later.
 const heroRef = ref(null)
 const videoRef = ref(null)
+const timecodeRef = ref(null)
 const loopSrc = ref('')
-const loopReady = ref(false)
+const canPlay = ref(false)
+const linesDone = ref(false)
+const loopReady = computed(() => canPlay.value && linesDone.value)
 const modalOpen = ref(false)
+const lastLine = showreel.headline.length - 1
 
 let inView = true
 let observer
 
+// ── Running timecode (HH:MM:SS:FF at 25 fps) ──────────────
+// Written straight to textContent each frame, not through reactive state. It follows the loop's
+// currentTime once the loop shows, and time since mount before that. Static with reduced motion.
+const FPS = 25
+const pad2 = (n) => String(n).padStart(2, '0')
+const formatTimecode = (seconds) => {
+  const frames = Math.floor(seconds * FPS)
+  const s = Math.floor(frames / FPS)
+  return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60, frames % FPS].map(pad2).join(':')
+}
+
+let rafId = 0
+let clockStart = 0
+let clockElapsed = 0
+
+const tick = (now) => {
+  const video = videoRef.value
+  const seconds = loopReady.value && video ? video.currentTime : (now - clockStart) / 1000
+  if (timecodeRef.value) timecodeRef.value.textContent = formatTimecode(seconds)
+  rafId = requestAnimationFrame(tick)
+}
+
+const setTicking = (on) => {
+  if (on && !rafId) {
+    clockStart = performance.now() - clockElapsed
+    rafId = requestAnimationFrame(tick)
+  } else if (!on && rafId) {
+    cancelAnimationFrame(rafId)
+    rafId = 0
+    clockElapsed = performance.now() - clockStart
+  }
+}
+
+// Loop and timecode run only while the hero is on screen, the tab is visible and the player is closed.
 const syncPlayback = () => {
+  const active = inView && !document.hidden && !modalOpen.value
+  setTicking(active)
   const video = videoRef.value
   if (!video) return
-  if (inView && !document.hidden && !modalOpen.value) video.play().catch(() => {})
+  if (active) video.play().catch(() => {})
   else video.pause()
 }
 
 const onCanPlay = () => {
-  loopReady.value = true
+  canPlay.value = true
   syncPlayback()
 }
 
@@ -42,10 +83,7 @@ const startLoop = () => {
 const whenIdle = () => (window.requestIdleCallback ?? ((cb) => setTimeout(cb, 200)))(startLoop)
 
 onMounted(() => {
-  if (prefersReducedMotion() || isSlowConnection()) return
-
-  if (document.readyState === 'complete') whenIdle()
-  else window.addEventListener('load', whenIdle, { once: true })
+  if (prefersReducedMotion()) return
 
   observer = new IntersectionObserver(([entry]) => {
     inView = entry.isIntersecting
@@ -53,12 +91,17 @@ onMounted(() => {
   })
   observer.observe(heroRef.value)
   document.addEventListener('visibilitychange', syncPlayback)
+
+  if (isSlowConnection()) return
+  if (document.readyState === 'complete') whenIdle()
+  else window.addEventListener('load', whenIdle, { once: true })
 })
 
 onUnmounted(() => {
   window.removeEventListener('load', whenIdle)
   document.removeEventListener('visibilitychange', syncPlayback)
   observer?.disconnect()
+  setTicking(false)
 })
 
 // The full showreel plays with sound in the modal; pause the loop behind it.
@@ -107,7 +150,11 @@ watch(modalOpen, syncPlayback)
           class="hero__line"
           :style="{ '--i': i }"
         >
-          <span class="hero__line-inner" :class="{ accent: line.accent }">{{ line.text }}</span>
+          <span
+            class="hero__line-inner"
+            :class="{ accent: line.accent }"
+            @animationend="i === lastLine && (linesDone = true)"
+          >{{ line.text }}</span>
         </span>
       </h1>
       <p class="t-body-large hero__intro">{{ showreel.intro }}</p>
@@ -116,6 +163,8 @@ watch(modalOpen, syncPlayback)
         <AppButton variant="outline" to="/contact">Start a Project</AppButton>
       </div>
     </div>
+
+    <span ref="timecodeRef" class="t-mono hero__timecode" aria-hidden="true">00:00:00:00</span>
 
     <div class="hero__corners t-mono">
       <p><b>{{ showreel.hud.left }}</b></p>
@@ -210,6 +259,15 @@ watch(modalOpen, syncPlayback)
   flex-wrap: wrap;
   gap: var(--space-04);
   margin-top: var(--space-07);
+}
+
+/* ── Running timecode, top right ── */
+.hero__timecode {
+  position: absolute;
+  top: calc(var(--nav-h) + var(--space-05));
+  right: var(--gutter);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Bottom corners (wrap onto two lines on narrow phones) ── */

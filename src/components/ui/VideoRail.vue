@@ -4,16 +4,24 @@ import VideoCard from './VideoCard.vue'
 
 // A horizontal, snap-scrolling strip of vertical (9:16) films, so they never
 // mix into a landscape grid. Arrow buttons for mouse users; swipe on touch.
-defineProps({
+// `fit`: up to three phone-framed films side by side when they fit (no arrows),
+// a swipe row on phones.
+const props = defineProps({
   videos: {
     type: Array,
     required: true,
   },
   label: {
     type: String,
-    default: 'Vertical cuts',
+    default: '',
+  },
+  fit: {
+    type: Boolean,
+    default: false,
   },
 })
+
+const sizes = props.fit ? '(max-width: 639px) 62vw, (max-width: 899px) 30vw, 300px' : '(max-width: 639px) 45vw, 240px'
 
 const emit = defineEmits(['play'])
 
@@ -45,9 +53,9 @@ onUnmounted(() => resizeObserver?.disconnect())
 </script>
 
 <template>
-  <div class="video-rail">
-    <div class="video-rail__head">
-      <p class="video-rail__label">
+  <div class="video-rail" :class="{ 'video-rail--fit': fit }">
+    <div v-if="label || !(atStart && atEnd)" class="video-rail__head">
+      <p v-if="label" class="video-rail__label">
         {{ label }} <span>{{ String(videos.length).padStart(2, '0') }}</span>
       </p>
       <div v-if="!(atStart && atEnd)" class="video-rail__nav">
@@ -59,11 +67,11 @@ onUnmounted(() => resizeObserver?.disconnect())
     <div ref="trackRef" class="video-rail__track" @scroll.passive="update">
       <VideoCard
         v-for="video in videos"
-        :key="video.id"
+        :key="video.slug"
         class="video-rail__item"
         :video="video"
         aspect="9:16"
-        sizes="(max-width: 639px) 45vw, 240px"
+        :sizes="sizes"
         @play="emit('play', $event)"
       />
     </div>
@@ -96,6 +104,7 @@ onUnmounted(() => resizeObserver?.disconnect())
 
 .video-rail__nav {
   display: flex;
+  margin-left: auto;
   gap: var(--space-02);
 }
 
@@ -150,6 +159,30 @@ onUnmounted(() => resizeObserver?.disconnect())
 @media (min-width: 900px) {
   .video-rail__track {
     grid-auto-columns: calc((100% - 4 * var(--gutter)) / 5);
+  }
+}
+
+/* ─── fit: phone cards ─────────────────────────────────────── */
+.video-rail--fit :deep(.video-card__thumb) {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-phone);
+}
+
+.video-rail--fit .video-rail__track {
+  grid-auto-columns: calc((100% - var(--gutter)) / 1.6);
+}
+
+@media (min-width: 640px) {
+  .video-rail--fit .video-rail__track {
+    grid-auto-columns: calc((100% - 2 * var(--gutter)) / 3);
+  }
+}
+
+/* Keep three phones a readable height on wide screens */
+@media (min-width: 900px) {
+  .video-rail--fit {
+    max-width: calc(var(--space-11) * 6);
+    margin-inline: auto;
   }
 }
 </style>

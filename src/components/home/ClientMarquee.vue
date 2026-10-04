@@ -6,7 +6,7 @@ import Marquee from '../ui/Marquee.vue'
 <template>
   <section class="client-marquee" aria-label="Clients">
     <p class="t-caption client-marquee__label container">Trusted by</p>
-    <Marquee :items="clients" variant="mono" :speed="50" pause-on-hover>
+    <Marquee :items="clients" variant="mono" :speed="60" pause-on-hover>
       <template #item="{ item, duplicate }">
         <!-- Accessible names on the first track only; the duplicate track is aria-hidden -->
         <span

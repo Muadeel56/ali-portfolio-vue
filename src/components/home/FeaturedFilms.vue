@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useVideoPreview, stopPreview } from '@/composables/useVideoPreview.js'
+import { useShutter } from '@/composables/useMotion.js'
 import { featuredVideos } from '@/data/videos.js'
 import SectionHeader from '../ui/SectionHeader.vue'
 import VideoCard from '../ui/VideoCard.vue'
@@ -12,7 +13,10 @@ defineProps({
   total: { type: String, required: true },
 })
 
-useVideoPreview('.featured-films .video-card[data-id]')
+useVideoPreview('.featured-films .video-card[data-slug]')
+
+const rootRef = ref(null)
+useShutter(rootRef)
 
 const modalOpen = ref(false)
 const modalVideo = ref(null)
@@ -27,7 +31,7 @@ const sizes = ['(max-width: 899px) 100vw, 66vw', '(max-width: 899px) 100vw, 33vw
 </script>
 
 <template>
-  <section class="section featured-films" aria-labelledby="featured-title">
+  <section ref="rootRef" class="section featured-films" aria-labelledby="featured-title">
     <div class="container">
       <SectionHeader
         title-id="featured-title"
@@ -42,7 +46,7 @@ const sizes = ['(max-width: 899px) 100vw, 66vw', '(max-width: 899px) 100vw, 33vw
       <div class="featured-films__grid grid-12">
         <VideoCard
           v-for="(video, i) in featuredVideos"
-          :key="video.id"
+          :key="video.slug"
           class="featured-films__item"
           :class="`featured-films__item--${i}`"
           :video="video"
@@ -57,7 +61,7 @@ const sizes = ['(max-width: 899px) 100vw, 66vw', '(max-width: 899px) 100vw, 33vw
       </div>
     </div>
 
-    <VideoPlayerModal v-model:open="modalOpen" :video="modalVideo" />
+    <VideoPlayerModal v-model:open="modalOpen" v-model:video="modalVideo" :playlist="featuredVideos" />
   </section>
 </template>
 

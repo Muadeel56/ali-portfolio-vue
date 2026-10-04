@@ -24,16 +24,16 @@ export function stopPreview() {
 }
 
 // Hover handlers for individual cards (desktop only; touch uses the observer).
-export function previewEnter(id) {
-  if (enabled && canHover) activePreviewId.value = id
+export function previewEnter(slug) {
+  if (enabled && canHover) activePreviewId.value = slug
 }
 
-export function previewLeave(id) {
-  if (canHover && activePreviewId.value === id) activePreviewId.value = null
+export function previewLeave(slug) {
+  if (canHover && activePreviewId.value === slug) activePreviewId.value = null
 }
 
 // Hover-to-preview on desktop; on touch devices the single card most in view previews.
-// Cards matched by `selector` must carry a `data-id` attribute. Pass `null` for hover-only
+// Cards matched by `selector` must carry a `data-slug` attribute. Pass `null` for hover-only
 // previews (touch devices then show posters only).
 // Previews are disabled entirely for data saver and reduced motion.
 export function useVideoPreview(selector) {
@@ -41,15 +41,15 @@ export function useVideoPreview(selector) {
   const ratios = new Map()
 
   const pickMostVisible = () => {
-    let bestId = null
+    let bestSlug = null
     let bestRatio = MIN_RATIO
-    for (const [id, ratio] of ratios) {
+    for (const [slug, ratio] of ratios) {
       if (ratio >= bestRatio) {
-        bestId = id
+        bestSlug = slug
         bestRatio = ratio
       }
     }
-    activePreviewId.value = bestId
+    activePreviewId.value = bestSlug
   }
 
   onMounted(() => {
@@ -65,7 +65,7 @@ export function useVideoPreview(selector) {
     observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          ratios.set(entry.target.dataset.id, entry.isIntersecting ? entry.intersectionRatio : 0)
+          ratios.set(entry.target.dataset.slug, entry.isIntersecting ? entry.intersectionRatio : 0)
         })
         pickMostVisible()
       },
@@ -79,7 +79,7 @@ export function useVideoPreview(selector) {
     activePreviewId.value = null
   })
 
-  // Re-scan for cards after the page swaps its content (e.g. Work page tabs).
+  // Re-scan for cards after the page swaps its content.
   const refresh = () => {
     if (!observer) return
     observer.disconnect()

@@ -103,7 +103,8 @@ const keyOf = (item) => (typeof item === 'string' ? item : item.name)
   }
 }
 
-.marquee--pausable:hover .marquee__inner {
+.marquee--pausable:hover .marquee__inner,
+.marquee--pausable:focus-within .marquee__inner {
   animation-play-state: paused;
 }
 

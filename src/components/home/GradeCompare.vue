@@ -44,7 +44,7 @@ const onPointerUp = () => {
 </script>
 
 <template>
-  <section class="section grade-compare" aria-labelledby="grade-title">
+  <section id="grading" class="section grade-compare" aria-labelledby="grade-title">
     <div class="container">
       <SectionHeader
         title-id="grade-title"
@@ -60,6 +60,7 @@ const onPointerUp = () => {
         <div
           ref="frameRef"
           class="grade-compare__frame"
+          data-cursor="drag"
           :style="{ '--pos': `${pos}%` }"
           @pointerdown="onPointerDown"
           @pointermove="onPointerMove"

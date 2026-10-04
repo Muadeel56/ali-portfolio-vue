@@ -2,10 +2,15 @@
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
-import { services } from '@/data/services.js'
+import { services, serviceWorkLink } from '@/data/services.js'
 import SectionHeader from '../ui/SectionHeader.vue'
 import Marquee from '../ui/Marquee.vue'
 import Rule from '../ui/Rule.vue'
+
+defineProps({
+  number: { type: String, required: true },
+  total: { type: String, required: true },
+})
 
 useScrollReveal('.services-section .reveal')
 
@@ -22,15 +27,17 @@ const toggle = (i) => {
 </script>
 
 <template>
-  <section id="services" class="section services-section">
+  <section id="services" class="section section--after-hero services-section" aria-labelledby="services-title">
     <div class="container">
       <SectionHeader
         class="reveal"
-        number="03"
-        eyebrow="What I Offer"
-        title="Services"
-        accent="Services"
-        intro="Editing, grading and finishing — from wedding films to brand work and short-form, delivered remotely to clients worldwide."
+        title-id="services-title"
+        :number="number"
+        :total="total"
+        eyebrow="What I offer"
+        title="Pick the closest fit"
+        accent="closest fit"
+        intro="Open a service to see what's included. Enquire opens the form with it already selected."
       />
     </div>
 
@@ -68,11 +75,19 @@ const toggle = (i) => {
                     <div class="services-section__tags">
                       <span v-for="tag in service.tags" :key="tag" class="services-section__tag">{{ tag }}</span>
                     </div>
-                    <RouterLink
-                      class="services-section__enquire services-section__enquire--mobile"
-                      :to="{ path: '/contact', query: { service: service.id } }"
-                      @click.stop
-                    >Enquire →</RouterLink>
+                    <div class="services-section__links">
+                      <RouterLink
+                        v-if="serviceWorkLink(service)"
+                        class="services-section__enquire services-section__see-work"
+                        :to="serviceWorkLink(service)"
+                        @click.stop
+                      >See the work →</RouterLink>
+                      <RouterLink
+                        class="services-section__enquire services-section__enquire--mobile"
+                        :to="{ path: '/contact', query: { service: service.id } }"
+                        @click.stop
+                      >Enquire →</RouterLink>
+                    </div>
                   </div>
                 </Transition>
               </div>
@@ -236,9 +251,16 @@ const toggle = (i) => {
     border-color var(--dur-fast) var(--ease-out-expo);
 }
 
+.services-section__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-05);
+  margin-top: var(--space-05);
+}
+
+.services-section__see-work,
 .services-section__enquire--mobile {
   display: inline-block;
-  margin-top: var(--space-05);
 }
 
 .services-section__enquire--desktop {
