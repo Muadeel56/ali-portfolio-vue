@@ -1,199 +1,52 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
+import { useVideoPreview, stopPreview, vReleaseMedia } from '@/composables/useVideoPreview.js'
+import { videos, categoryOrder, showreel, cdn, posterAttrs, pickSource, formatDuration } from '@/data/videos.js'
 import SectionLabel from '../ui/SectionLabel.vue'
 
 useScrollReveal('.videography-section .reveal')
 
-const s3 = import.meta.env.VITE_CDN_URL
+const { activePreviewId, onEnter, onLeave } = useVideoPreview('.vs__card[data-id]')
 
-const videos = ref([
-  // ── Touchstone Communications ─────────────────────────────
-  {
-    id: 1,
-    category: 'Touchstone Communications',
-    tag: '2026 · Corporate Event',
-    title: 'Premier League Highlights',
-    sub: 'Corporate Event Film',
-    desc: 'Full event highlight reel from Touchstone Communications Premier League — capturing energy, moments, and brand identity.',
-    src: `${s3}/Premier+highlight+Final.mp4`,
-  },
-  {
-    id: 4,
-    category: 'Touchstone Communications',
-    tag: '2026 · Corporate Documentary',
-    title: 'Employee Success Story',
-    sub: 'Corporate Documentary',
-    desc: 'A personal story of growth and ambition — documenting a Touchstone Communications employee\'s journey.',
-    src: `${s3}/Talha+Success+Story+final.mp4`,
-  },
-  {
-    id: 8,
-    category: 'Touchstone Communications',
-    tag: '2026 · Brand Film',
-    title: 'Corporate Brand Film',
-    sub: 'Company Documentary',
-    desc: 'A cinematic brand documentary showcasing Touchstone Communications — culture, people, and purpose.',
-    src: `${s3}/Final+Video.mp4`,
-  },
-  // ── Clothing Brand ────────────────────────────────────────
-  {
-    id: 5,
-    category: 'Clothing Brand',
-    tag: '2026 · Fashion Film',
-    title: 'Campaign Launch Film',
-    sub: 'Fashion Campaign',
-    desc: 'A cinematic launch film for a clothing brand — styled looks, movement, and mood in one cohesive cut.',
-    src: `${s3}/1.mp4`,
-  },
-  {
-    id: 9,
-    category: 'Clothing Brand',
-    tag: '2026 · Brand Reel',
-    title: 'Brand Highlight Reel',
-    sub: 'Compiled Brand Reel',
-    desc: 'Final compiled highlight reel showcasing the best moments from the clothing brand shoot.',
-    src: `${s3}/Final+Reel+1.mp4`,
-  },
-  {
-    id: 11,
-    category: 'Clothing Brand',
-    tag: '2026 · Behind the Scenes',
-    title: 'Behind the Shoot',
-    sub: 'BTS Fashion Film',
-    desc: 'A behind-the-scenes look at the clothing brand shoot — raw, candid, and in motion.',
-    src: `${s3}/3.Shoot+for+Clothing+brand+.mp4`,
-  },
-  {
-    id: 13,
-    category: 'Clothing Brand',
-    tag: '2026 · Lifestyle',
-    title: 'Lifestyle Campaign',
-    sub: 'Lifestyle Fashion Film',
-    desc: 'Editorial lifestyle film for a clothing label — evoking aspiration through movement and environment.',
-    src: `${s3}/4.Clothing+Brand+.mp4`,
-  },
-  // ── Khais ─────────────────────────────────────────────────
-  {
-    id: 3,
-    category: 'Khais',
-    tag: '2026 · Brand Reel',
-    title: 'Khais — Brand Reel',
-    sub: 'Beauty Brand Film',
-    desc: 'Second campaign reel for Khais beauty brand — product story told through texture, light, and detail.',
-    src: `${s3}/2nd+Reel-.mp4`,
-  },
-  {
-    id: 12,
-    category: 'Khais',
-    tag: '2026 · Product Shoot',
-    title: 'Khais — Product Shoot',
-    sub: 'Beauty Product Film',
-    desc: 'Product launch film for Khais — two hero products, one visual story.',
-    src: `${s3}/2.Shoot+For+khais+.mp4`,
-  },
-  // ── Commercial ────────────────────────────────────────────
-  {
-    id: 10,
-    category: 'Commercial',
-    tag: '2026 · Promo Film',
-    title: 'Tax Smart — Promo Film',
-    sub: 'Commercial Promo',
-    desc: 'Promotional video for Tax Smart — clear messaging, clean visuals, and a strong brand voice.',
-    src: `${s3}/Tax+Smart.mp4`,
-  },
-  {
-    id: 14,
-    category: 'Commercial',
-    tag: '2026 · Real Estate',
-    title: 'Emarat Developers — Property Film',
-    sub: 'Real Estate Commercial',
-    desc: 'A property showcase film for Emarat Developers — architecture, space, and aspiration.',
-    src: `${s3}/5.Emaraat+Developers+.mp4`,
-  },
-  // ── Documentary ───────────────────────────────────────────
-  {
-    id: 6,
-    category: 'Documentary',
-    tag: '2026 · Healthcare',
-    title: 'Dr. Shandana — Healthcare Story',
-    sub: 'Healthcare Documentary',
-    desc: 'A documentary portrait of a diagnostic center in the twin cities — healthcare, community, and compassion.',
-    src: `${s3}/Dr+Shandana+v4.mp4`,
-  },
-  {
-    id: 7,
-    category: 'Documentary',
-    tag: '2026 · Awareness',
-    title: 'Breast Cancer — Awareness Film',
-    sub: 'Awareness Campaign',
-    desc: 'A powerful awareness campaign film about breast cancer — stories that matter, told with care.',
-    src: `${s3}/Breast+Cancer+re.mp4`,
-  },
-  // ── Wedding Films ─────────────────────────────────────────
-  {
-    id: 2,
-    category: 'Wedding Films',
-    tag: '2026 · Bridal Film',
-    title: 'Kudsiya — Bridal Film',
-    sub: 'Cinematic Bridal Shoot',
-    desc: 'A cinematic tribute to tradition and elegance — bridal dress shoot capturing grace, detail, and emotion.',
-    src: `${s3}/Kudsiya+Song.mp4`,
-  },
-])
+const reelVideo = videos.find(v => v.id === showreel.videoId)
+const reelPoster = posterAttrs(reelVideo)
 
-const showreel = ref({
-  hud: { left: 'Ali Hassan', leftSub: 'Rawalpindi, Pakistan', right: 'Remote Editing', rightSub: 'Available Worldwide' },
-  title: 'A year, in motion.',
-  meta: 'Selected Works · 2025–2026',
-})
+const gridSizes = {
+  landscape: '(max-width: 639px) 100vw, (max-width: 767px) 50vw, 33vw',
+  portrait: '(max-width: 767px) 50vw, (max-width: 1099px) 25vw, 20vw',
+}
 
-const categoryOrder = [
-  'Touchstone Communications',
-  'Clothing Brand',
-  'Khais',
-  'Commercial',
-  'Documentary',
-  'Wedding Films',
-]
-
+// Each category is split into a landscape and a portrait grid so vertical
+// videos keep their 9:16 shape instead of being letterboxed.
 const groupedVideos = computed(() => {
   const map = {}
-  for (const v of videos.value) {
+  for (const v of videos) {
     if (!map[v.category]) map[v.category] = []
-    map[v.category].push(v)
+    map[v.category].push({ ...v, thumb: posterAttrs(v) })
   }
-  return categoryOrder.filter(c => map[c]).map(c => ({ category: c, items: map[c] }))
+  return categoryOrder.filter(c => map[c]).map(c => ({
+    category: c,
+    count: map[c].length,
+    grids: ['landscape', 'portrait']
+      .map(orientation => ({ orientation, items: map[c].filter(v => v.orientation === orientation) }))
+      .filter(g => g.items.length),
+  }))
 })
-
-// ── Lazy loading via IntersectionObserver ─────────────────
-const visibleIds = ref(new Set())
-let observer = null
-
-onMounted(() => {
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = Number(entry.target.dataset.id)
-        visibleIds.value = new Set([...visibleIds.value, id])
-        observer.unobserve(entry.target)
-      }
-    })
-  }, { rootMargin: '300px' })
-
-  document.querySelectorAll('.vs__card[data-id]').forEach(el => observer.observe(el))
-})
-
-onUnmounted(() => observer?.disconnect())
 
 // ── Player ────────────────────────────────────────────────
+// No <video> exists until the visitor clicks; each video gets its own element
+// (keyed by id) so switching tears down the previous download.
 const playerRef = ref(null)
 const isPlaying = ref(false)
 const isBuffering = ref(false)
 const activeVideo = ref(null)
+const activeSrc = ref('')
 
-const play = (src = null) => {
-  activeVideo.value = src
+const play = (video) => {
+  stopPreview()
+  activeVideo.value = video
+  activeSrc.value = pickSource(video)
   isPlaying.value = true
   isBuffering.value = true
   nextTick(() => {
@@ -218,9 +71,28 @@ const play = (src = null) => {
       </div>
 
       <!-- Showreel player -->
-      <div ref="playerRef" class="vs__player reveal" @click="!isPlaying && play(videos[0].src)">
+      <div
+        ref="playerRef"
+        class="vs__player reveal"
+        :class="{ 'vs__player--portrait': isPlaying && activeVideo.orientation === 'portrait' }"
+        @click="!isPlaying && play(reelVideo)"
+      >
         <span class="vs__corner vs__corner--tl" aria-hidden="true" />
         <span class="vs__corner vs__corner--br" aria-hidden="true" />
+
+        <!-- Showreel poster (pre-play) -->
+        <img
+          v-if="!isPlaying"
+          class="vs__poster"
+          :src="reelPoster.large"
+          :srcset="reelPoster.srcset"
+          sizes="(max-width: 1280px) 100vw, 1280px"
+          :width="reelPoster.width"
+          :height="reelPoster.height"
+          fetchpriority="high"
+          decoding="async"
+          alt=""
+        />
 
         <!-- HUD top -->
         <div class="vs__hud-top" aria-hidden="true">
@@ -237,7 +109,7 @@ const play = (src = null) => {
         <!-- Cover (pre-play) -->
         <Transition name="fade">
           <div v-if="!isPlaying" class="vs__cover">
-            <button class="vs__play-btn" aria-label="Play showreel" @click.stop="play">
+            <button class="vs__play-btn" aria-label="Play showreel" @click.stop="play(reelVideo)">
               <span class="vs__triangle" aria-hidden="true" />
             </button>
             <span class="vs__play-label">Watch Showreel</span>
@@ -248,10 +120,14 @@ const play = (src = null) => {
         <Transition name="fade">
           <video
             v-if="isPlaying"
+            :key="activeVideo.id"
+            v-release-media
             class="vs__iframe"
-            :src="activeVideo"
+            :src="activeSrc"
+            :poster="posterAttrs(activeVideo).large"
             autoplay
             controls
+            playsinline
             @waiting="isBuffering = true"
             @playing="isBuffering = false"
             @canplay="isBuffering = false"
@@ -279,34 +155,56 @@ const play = (src = null) => {
       <div v-for="group in groupedVideos" :key="group.category" class="vs__group reveal">
         <div class="vs__group-header">
           <span class="vs__group-label">{{ group.category }}</span>
-          <span class="vs__group-count">{{ String(group.items.length).padStart(2, '0') }}</span>
+          <span class="vs__group-count">{{ String(group.count).padStart(2, '0') }}</span>
         </div>
-        <div class="vs__grid">
+        <div
+          v-for="grid in group.grids"
+          :key="grid.orientation"
+          class="vs__grid"
+          :class="`vs__grid--${grid.orientation}`"
+        >
           <div
-            v-for="video in group.items"
+            v-for="video in grid.items"
             :key="video.id"
             class="vs__card"
             role="button"
             tabindex="0"
             :data-id="video.id"
             :aria-label="`Play ${video.title}`"
-            @click="play(video.src)"
-            @keydown.enter="play(video.src)"
+            @click="play(video)"
+            @keydown.enter="play(video)"
+            @mouseenter="onEnter(video.id)"
+            @mouseleave="onLeave(video.id)"
           >
             <div class="vs__thumb">
+              <img
+                class="vs__thumb-media"
+                :src="video.thumb.src"
+                :srcset="video.thumb.srcset"
+                :sizes="gridSizes[grid.orientation]"
+                :width="video.thumb.width"
+                :height="video.thumb.height"
+                loading="lazy"
+                decoding="async"
+                :alt="video.title"
+              />
               <video
-                v-if="visibleIds.has(video.id)"
-                class="vs__thumb-video"
-                :src="video.src"
-                preload="metadata"
+                v-if="activePreviewId === video.id"
+                v-release-media
+                class="vs__thumb-media"
+                :src="cdn(video.preview)"
+                autoplay
                 muted
+                loop
                 playsinline
-                @loadedmetadata="(e) => { e.target.currentTime = 1 }"
+                preload="none"
+                aria-hidden="true"
               />
               <span class="vs__plate" aria-hidden="true">{{ video.tag }}</span>
               <div class="vs__vplay" aria-hidden="true">
                 <span class="vs__vtri" />
               </div>
+              <span class="vs__duration" aria-hidden="true">{{ formatDuration(video.duration) }}</span>
               <span class="vs__pcorner vs__pcorner--tl" aria-hidden="true" />
               <span class="vs__pcorner vs__pcorner--br" aria-hidden="true" />
             </div>
@@ -406,6 +304,24 @@ const play = (src = null) => {
   overflow: hidden;
   isolation: isolate;
   cursor: pointer;
+}
+
+.vs__player--portrait {
+  aspect-ratio: 9 / 16;
+  width: auto;
+  height: min(80vh, 150vw);
+  margin-inline: auto;
+  cursor: default;
+}
+
+/* Showreel poster sits under the scanline/vignette overlays */
+.vs__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .vs__player::before {
@@ -654,6 +570,15 @@ const play = (src = null) => {
   gap: var(--space-07);
 }
 
+.vs__grid--portrait {
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-04);
+}
+
+.vs__grid + .vs__grid {
+  margin-top: var(--space-06);
+}
+
 .vs__card {
   cursor: pointer;
   outline: none;
@@ -672,9 +597,15 @@ const play = (src = null) => {
   isolation: isolate;
 }
 
-.vs__thumb-video {
+.vs__grid--portrait .vs__thumb {
+  aspect-ratio: 9 / 16;
+}
+
+/* Poster <img> and hover/in-view preview <video> share the same box */
+.vs__thumb-media {
   position: absolute;
   inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -888,6 +819,10 @@ const play = (src = null) => {
     margin-top: var(--space-04);
   }
 
+  .vs__grid--portrait {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   .vs__corner {
     width: 48px;
     height: 48px;
@@ -927,6 +862,12 @@ const play = (src = null) => {
     flex-direction: row;
     justify-content: space-between;
     text-align: left;
+  }
+}
+
+@media (min-width: 1100px) {
+  .vs__grid--portrait {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 </style>

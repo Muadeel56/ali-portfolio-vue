@@ -6,14 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:local-videos": "python3 scripts/serve-videos.py 8089 & P=$!; VITE_CDN_URL=http://localhost:8089 vite; kill $P"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "gsap": "^3.15.0",
     "vue": "^3.5.34",
-    "vue-router": "^4.6.4",
-    "yet-another-react-lightbox": "^3.32.0"
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.6",
