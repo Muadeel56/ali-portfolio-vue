@@ -1,19 +1,32 @@
 import { createRouter, createWebHistory, START_LOCATION } from 'vue-router'
 import { beginCut, endCut, transitionDone, navOffset } from '@/composables/useRouteTransition.js'
 import { site } from '@/data/site.js'
+import { applyPageMeta } from './seo.js'
+// Eager: / is the main landing page, and a lazy chunk would hold back its first paint (LCP)
+// by a second round trip. The other pages stay lazy.
+import HomeView from '@/views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/views/HomeView.vue'),
-    meta: { title: `${site.name} — Videographer & Editor` },
+    component: HomeView,
+    // Keep in sync with <title> in index.html
+    meta: {
+      title: `${site.name} — Video Editor & Colorist | Rawalpindi · Worldwide`,
+      description:
+        'Ali Hassan — video editor and colorist in Rawalpindi, Pakistan. Wedding, brand, documentary and short-form films, edited and graded for clients worldwide.',
+    },
   },
   {
     path: '/work',
     name: 'work',
     component: () => import('@/views/WorkView.vue'),
-    meta: { title: 'Work' },
+    meta: {
+      title: 'Work',
+      description:
+        'Selected films by Ali Hassan: brand and corporate films, fashion campaigns, documentaries, short-form reels and weddings, edited and colour graded.',
+    },
   },
   {
     path: '/videography',
@@ -23,26 +36,36 @@ const routes = [
     path: '/services',
     name: 'services',
     component: () => import('@/views/ServicesView.vue'),
-    meta: { title: 'Services' },
+    meta: {
+      title: 'Services',
+      description:
+        'Wedding film edits, brand and corporate videos, short-form reels, documentaries, colour grading and podcast edits. Deliverables, turnaround and a quote within 24 hours.',
+    },
   },
   {
     path: '/about',
     name: 'about',
     component: () => import('@/views/AboutView.vue'),
-    meta: { title: 'About' },
+    meta: {
+      title: 'About',
+      description: 'Ali Hassan is a video editor and colorist based in Rawalpindi, Pakistan, cutting films for clients worldwide.',
+    },
   },
   {
     path: '/contact',
     name: 'contact',
     component: () => import('@/views/ContactView.vue'),
-    meta: { title: 'Contact' },
+    meta: {
+      title: 'Contact',
+      description: 'Send Ali Hassan a project brief: service, budget, deadline and a footage link. Reply within 24 hours, or message on WhatsApp.',
+    },
   },
   // Must stay last
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/views/NotFoundView.vue'),
-    meta: { title: 'Page not found' },
+    meta: { title: 'Page not found', description: "This page doesn't exist. Head back to Ali Hassan's work.", noindex: true },
   },
 ]
 
@@ -76,8 +99,7 @@ router.afterEach((to, from, failure) => {
   }
   // Query/hash changes keep the page title (the player modal sets its own while open).
   if (from !== START_LOCATION && to.path === from.path) return
-  const title = to.meta.title
-  document.title = to.name === 'home' ? title : `${title} — ${site.name}`
+  applyPageMeta(to)
 })
 
 export default router

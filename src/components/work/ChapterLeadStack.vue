@@ -67,7 +67,8 @@ if (import.meta.env.DEV) {
   column-gap: var(--gutter);
 }
 
-@media (min-width: 640px) and (max-width: 899px) {
+/* Tablet: the stack sits side by side under the lead */
+@media (min-width: 640px) {
   .lead-stack__stack:not(.lead-stack__stack--pair) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: var(--gutter);
@@ -82,6 +83,11 @@ if (import.meta.env.DEV) {
   .lead-stack__stack {
     grid-column: 9 / 13;
     gap: var(--space-06);
+  }
+
+  /* Desktop: back to one column beside the lead */
+  .lead-stack__stack:not(.lead-stack__stack--pair) {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .lead-stack--flip .lead-stack__lead {

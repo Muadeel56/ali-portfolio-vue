@@ -6,6 +6,7 @@ import AppCursor from './components/AppCursor.vue'
 import AppNavbar from './components/layout/AppNavbar.vue'
 import AppMobileNav from './components/layout/AppMobileNav.vue'
 import AppFooter from './components/layout/AppFooter.vue'
+import WhatsAppButton from './components/ui/WhatsAppButton.vue'
 
 // After each cut: release scrollBehavior, then let scroll-driven motion measure the new page.
 const onPageEnter = () => {
@@ -26,5 +27,6 @@ const onPageEnter = () => {
     <AppFooter v-if="Component" />
   </RouterView>
   <div class="route-cut" :class="{ 'route-cut--on': cutting }" aria-hidden="true" />
+  <WhatsAppButton />
   <AppCursor />
 </template>

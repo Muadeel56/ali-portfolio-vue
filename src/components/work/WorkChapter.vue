@@ -27,18 +27,12 @@ const emit = defineEmits(['play'])
 
 <style scoped>
 .work-chapter {
-  padding-top: var(--space-08);
+  padding-top: var(--space-section);
   /* #hash jumps land below the navbar and the sticky chapter bar (+ its 2 border px) */
   scroll-margin-top: calc(var(--nav-h) + var(--space-07) + 2px);
 }
 
-@media (min-width: 900px) {
-  .work-chapter {
-    padding-top: var(--space-10);
-  }
-
-  .work-chapter:first-of-type {
-    padding-top: var(--space-08);
-  }
+.work-chapter:first-of-type {
+  padding-top: var(--space-08);
 }
 </style>

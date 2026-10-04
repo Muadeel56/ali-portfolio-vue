@@ -12,12 +12,12 @@ const service = computed(() => findService(props.chapter.serviceId))
 </script>
 
 <template>
-  <header class="chapter-opener">
+  <header class="chapter-opener" data-track-from="chapter">
     <div class="chapter-opener__grid grid-12">
       <!-- data-parallax: gentle drift on desktop (useParallax) -->
       <p class="t-display-hero chapter-opener__num" data-parallax>{{ chapter.number }}</p>
       <div class="chapter-opener__main">
-        <h3 :id="`${chapter.id}-title`" class="t-display-h2">{{ chapter.title }}</h3>
+        <h2 :id="`${chapter.id}-title`" class="t-display-h2">{{ chapter.title }}</h2>
         <p class="t-body-small chapter-opener__desc">{{ chapter.desc }}</p>
         <RouterLink
           v-if="service"
@@ -47,17 +47,21 @@ const service = computed(() => findService(props.chapter.serviceId))
 }
 
 .chapter-opener__service {
-  display: inline-block;
-  margin-top: var(--space-05);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: var(--space-01);
-  transition: border-color var(--dur-fast) var(--ease-out-expo);
+  /* 44px tall hit area */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  min-height: var(--tap);
+  margin-top: var(--space-03);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 6px;
+  transition: text-decoration-color var(--dur-fast) var(--ease-out-expo);
 }
 
 .chapter-opener__service:hover,
 .chapter-opener__service:focus-visible {
-  border-bottom-color: var(--gold);
+  text-decoration-color: var(--gold);
 }
 
 .chapter-opener__rule {

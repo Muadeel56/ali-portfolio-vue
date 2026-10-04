@@ -137,6 +137,8 @@ onUnmounted(() => resizeObserver?.disconnect())
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  /* Native swipe in both directions (pan-x scrolls the row, pan-y the page); no pinch or double-tap zoom */
+  touch-action: pan-x pan-y;
   /* Room for the focus ring inside the scroll box */
   padding: var(--space-01);
   margin: calc(var(--space-01) * -1);

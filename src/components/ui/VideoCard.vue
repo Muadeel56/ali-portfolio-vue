@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { activePreviewId, previewEnter, previewLeave, vReleaseMedia } from '@/composables/useVideoPreview.js'
 import { cdn, posterAttrs, filmMeta } from '@/data/videos.js'
 
@@ -28,11 +29,22 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // Doorway mode: the card is a link (e.g. /services → its /work chapter) and never plays.
+  // `video` may then be poster-only: { poster, title }.
+  to: {
+    type: [String, Object],
+    default: null,
+  },
+  // Caption in doorway mode, shown with an arrow (e.g. "See Weddings")
+  label: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['play'])
 
-const ratio = computed(() => props.aspect ?? props.video.aspect)
+const ratio = computed(() => props.aspect ?? props.video.aspect ?? '16:9')
 const poster = computed(() => posterAttrs(props.video))
 const posterSizes = computed(() => props.sizes ?? (ratio.value === '9:16' ? '(max-width: 639px) 50vw, 25vw' : '(max-width: 899px) 100vw, 50vw'))
 const isPreviewing = computed(() => activePreviewId.value === props.video.slug)
@@ -42,24 +54,40 @@ const caption = computed(() => filmMeta(props.video))
 const posterFailed = ref(false)
 
 const play = () => emit('play', props.video)
+
+// Playable card (button) or doorway link
+const rootTag = computed(() => (props.to ? RouterLink : 'article'))
+const rootAttrs = computed(() =>
+  props.to
+    ? { to: props.to }
+    : {
+        role: 'button',
+        tabindex: 0,
+        'data-slug': props.video.slug,
+        // Bare cards show no text, so they need a label; otherwise the name comes from the visible
+        // title and caption (plus a hidden "Play"), so speech users can say what they see.
+        'aria-label': props.bare ? `Play ${props.video.title}` : undefined,
+        onClick: play,
+        onKeydown: (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return
+          e.preventDefault()
+          play()
+        },
+        onMouseenter: () => previewEnter(props.video.slug),
+        onMouseleave: () => previewLeave(props.video.slug),
+      },
+)
 </script>
 
 <template>
-  <article
+  <component
+    :is="rootTag"
+    v-bind="rootAttrs"
     class="video-card"
-    :class="`video-card--${ratio === '9:16' ? 'portrait' : 'landscape'}`"
-    role="button"
-    tabindex="0"
-    :data-slug="video.slug"
-    :aria-label="`Play ${video.title}`"
-    @click="play"
-    @keydown.enter.prevent="play"
-    @keydown.space.prevent="play"
-    @mouseenter="previewEnter(video.slug)"
-    @mouseleave="previewLeave(video.slug)"
+    :class="[`video-card--${ratio === '9:16' ? 'portrait' : 'landscape'}`, { 'video-card--link': to }]"
   >
     <!-- data-shutter: clip-path reveal on scroll (useShutter); data-cursor: the global PLAY cursor -->
-    <div class="video-card__thumb" :data-shutter="priority ? undefined : ''" data-cursor="play">
+    <div class="video-card__thumb" :data-shutter="priority ? undefined : ''" :data-cursor="to ? undefined : 'play'">
       <span v-if="posterFailed" class="video-card__missing" aria-hidden="true">Coming soon</span>
       <img
         v-else
@@ -72,11 +100,11 @@ const play = () => emit('play', props.video)
         :loading="priority ? 'eager' : 'lazy'"
         :fetchpriority="priority ? 'high' : 'auto'"
         decoding="async"
-        :alt="video.title"
+        :alt="to ? '' : video.title"
         @error="posterFailed = true"
       />
       <video
-        v-if="isPreviewing"
+        v-if="isPreviewing && !to"
         v-release-media
         class="video-card__media"
         :src="cdn(video.preview)"
@@ -90,17 +118,28 @@ const play = () => emit('play', props.video)
       />
     </div>
 
-    <template v-if="!bare">
-      <h3 class="video-card__title">{{ video.title }}</h3>
+    <p v-if="to" class="video-card__caption video-card__caption--link">
+      <span class="video-card__link-label">{{ label }} <span aria-hidden="true">→</span></span>
+      <span>{{ video.title }}</span>
+    </p>
+    <template v-else-if="!bare">
+      <h3 class="video-card__title"><span class="visually-hidden">Play </span>{{ video.title }}</h3>
       <p class="video-card__caption">{{ caption }}</p>
     </template>
-  </article>
+  </component>
 </template>
 
 <style scoped>
 .video-card {
+  /* Captions follow the column the card sits in, not the viewport (see @container below) */
+  container: card / inline-size;
+  /* Keeps the visually hidden "Play" text inside the card (and inside swipe rows' scroll box) */
+  position: relative;
+  display: block;
   cursor: pointer;
   outline: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 .video-card__thumb {
@@ -144,10 +183,10 @@ const play = () => emit('play', props.video)
 .video-card__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: var(--fs-h3);
+  font-size: var(--fs-body-lg);
   line-height: 1.1;
   color: var(--text);
-  margin: var(--space-04) 0 0;
+  margin: var(--space-03) 0 0;
   transition: color var(--dur-base) var(--ease-out-expo);
 }
 
@@ -163,5 +202,42 @@ const play = () => emit('play', props.video)
   text-transform: uppercase;
   color: var(--muted);
   margin: var(--space-02) 0 0;
+}
+
+/* Doorway caption: gold label, then the film it shows */
+.video-card__caption--link {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-01) var(--space-04);
+}
+
+.video-card__link-label {
+  color: var(--gold);
+}
+
+.video-card--link:hover .video-card__link-label,
+.video-card--link:focus-visible .video-card__link-label {
+  color: var(--gold-light);
+}
+
+.video-card--link:focus-visible .video-card__thumb {
+  outline: 1px solid var(--gold);
+  outline-offset: 1px;
+}
+
+/* ─── Container queries: phone cards and narrow rails keep a small caption;
+   wider columns (stacks, leads) get the display title on one line with room to breathe ─── */
+@container card (min-width: 280px) {
+  .video-card__title {
+    font-size: var(--fs-h3);
+    margin-top: var(--space-04);
+  }
+}
+
+@container card (min-width: 560px) {
+  .video-card__caption {
+    font-size: var(--fs-label);
+  }
 }
 </style>

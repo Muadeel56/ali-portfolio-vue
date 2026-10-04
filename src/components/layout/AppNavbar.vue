@@ -75,7 +75,7 @@ onUnmounted(() => {
   right: 0;
   z-index: 100;
   height: var(--nav-height-desktop);
-  padding: 0 var(--gutter);
+  padding: 0 calc(var(--gutter) + env(safe-area-inset-right)) 0 calc(var(--gutter) + env(safe-area-inset-left));
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -103,7 +103,8 @@ onUnmounted(() => {
   transition: color var(--dur-fast) var(--ease-out-expo);
   background: none;
   border: none;
-  padding: 0;
+  /* 44px tall hit area */
+  padding: 10px 0;
 }
 
 .nav__logo:hover {
@@ -131,7 +132,9 @@ onUnmounted(() => {
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease-out-expo);
   position: relative;
-  padding: 4px 0;
+  /* Taller hit area for touch laptops and tablets in landscape */
+  display: inline-block;
+  padding: 15px 0;
   border: none;
   background: none;
 }
@@ -144,7 +147,7 @@ onUnmounted(() => {
 .nav__link--active::after {
   content: '';
   position: absolute;
-  bottom: -3px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
   width: 16px;
@@ -176,9 +179,14 @@ onUnmounted(() => {
   display: block;
 }
 
-@media (max-width: 899px) {
+/* Desktop only: AppMobileNav covers smaller screens */
+.nav {
+  display: none;
+}
+
+@media (min-width: 900px) {
   .nav {
-    display: none;
+    display: grid;
   }
 }
 </style>

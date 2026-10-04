@@ -4,6 +4,7 @@ import { useScrollReveal } from '@/composables/useScrollReveal.js'
 import { useVideoPreview, stopPreview, vReleaseMedia } from '@/composables/useVideoPreview.js'
 import { useFilmQuery } from '@/composables/useFilmQuery.js'
 import { useShutter, useParallax } from '@/composables/useMotion.js'
+import { track } from '@/composables/useAnalytics.js'
 import { chapters, chapterFilms, chapterForVideo, showreel, findVideo, posterAttrs, pickSource, formatDuration } from '@/data/videos.js'
 import { site } from '@/data/site.js'
 import PageHero from '../ui/PageHero.vue'
@@ -48,6 +49,7 @@ const reelSrc = ref('')
 
 const playReel = () => {
   if (reelPlaying.value) return
+  track('Video Play', { slug: reelVideo.slug, chapter: reelVideo.category, source: 'work' })
   stopPreview()
   reelSrc.value = pickSource(reelVideo)
   reelPlaying.value = true
@@ -65,9 +67,13 @@ const playlist = computed(() => {
   return chapter ? chapterFilms(chapter) : [film]
 })
 
+// A film open on arrival came from a shared ?film= link; one opened here, from the page.
+const openedHere = ref(false)
+
 const openVideo = (video) => {
   stopPreview()
   reelPlaying.value = false
+  openedHere.value = true
   openFilm(video)
 }
 </script>
@@ -167,7 +173,12 @@ const openVideo = (video) => {
       />
     </div>
 
-    <VideoPlayerModal v-model:open="modalOpen" v-model:video="modalVideo" :playlist="playlist" />
+    <VideoPlayerModal
+      v-model:open="modalOpen"
+      v-model:video="modalVideo"
+      :playlist="playlist"
+      :source="openedHere ? 'work' : 'link'"
+    />
   </section>
 </template>
 
@@ -356,11 +367,19 @@ const openVideo = (video) => {
   to { transform: rotate(360deg); }
 }
 
-/* HUD labels crowd the player on phones */
-@media (max-width: 639px) {
-  .ws__hud-top,
+/* HUD labels crowd the player on phones: they appear from 640px */
+.ws__hud-top,
+.ws__play-label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .ws__hud-top {
+    display: flex;
+  }
+
   .ws__play-label {
-    display: none;
+    display: inline;
   }
 }
 

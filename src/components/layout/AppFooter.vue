@@ -3,7 +3,10 @@ import { RouterLink } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
 import { contactInfo, socials } from '@/data/contact.js'
 import { site } from '@/data/site.js'
+import { track } from '@/composables/useAnalytics.js'
+import { whatsappHref } from '@/composables/useWhatsApp.js'
 import Rule from '../ui/Rule.vue'
+import AvailabilityBadge from '../ui/AvailabilityBadge.vue'
 
 const year = new Date().getFullYear()
 </script>
@@ -16,10 +19,7 @@ const year = new Date().getFullYear()
         <div class="footer__brand">
           <RouterLink to="/" class="footer__name">Ali's Portfolio</RouterLink>
           <p class="footer__tagline">Videography &amp; editing. Films that hold the silence between emotions.</p>
-          <p class="footer__status t-mono">
-            <span class="footer__dot" aria-hidden="true" />
-            <b>Available</b> · {{ site.availability }}
-          </p>
+          <AvailabilityBadge class="footer__status" />
         </div>
 
         <nav class="footer__col footer__nav" aria-label="Footer">
@@ -39,7 +39,17 @@ const year = new Date().getFullYear()
                 :href="item.href"
                 class="footer__link"
                 v-bind="item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {}"
+                @click="item.label === 'WhatsApp' && track('WhatsApp Click', { from: 'footer' })"
               >{{ item.text }}</a>
+            </li>
+            <li>
+              <a
+                :href="whatsappHref"
+                class="footer__link footer__link--gold"
+                target="_blank"
+                rel="noopener noreferrer"
+                @click="track('WhatsApp Click', { from: 'footer' })"
+              >WhatsApp →</a>
             </li>
             <li v-for="social in socials" :key="social.label">
               <a :href="social.href" class="footer__link" target="_blank" rel="noopener noreferrer">{{ social.label }}</a>
@@ -56,7 +66,14 @@ const year = new Date().getFullYear()
 <style scoped>
 .footer {
   padding-inline: var(--gutter);
-  padding-bottom: var(--space-06);
+  /* Below 900px: clear the floating WhatsApp button so it never covers the footer */
+  padding-bottom: calc(var(--space-06) + var(--fab) + var(--space-05) + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 900px) {
+  .footer {
+    padding-bottom: calc(var(--space-06) + env(safe-area-inset-bottom));
+  }
 }
 
 .footer__grid {
@@ -71,6 +88,10 @@ const year = new Date().getFullYear()
   line-height: 1;
   color: var(--gold);
   text-decoration: none;
+  /* 44px tall hit area */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
 }
 
 .footer__tagline {
@@ -82,17 +103,7 @@ const year = new Date().getFullYear()
 }
 
 .footer__status {
-  display: flex;
-  align-items: center;
-  gap: var(--space-02);
-  margin: var(--space-05) 0 0;
-}
-
-.footer__dot {
-  width: var(--space-02);
-  height: var(--space-02);
-  border-radius: 50%;
-  background: var(--gold);
+  margin-top: var(--space-05);
 }
 
 .footer__heading {
@@ -109,14 +120,21 @@ const year = new Date().getFullYear()
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-02);
 }
 
+/* 44px tall rows: comfortable tap targets without changing the type */
 .footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   font-size: var(--fs-body);
   color: var(--text-dim);
   text-decoration: none;
   transition: color var(--dur-fast) var(--ease-out-expo);
+}
+
+.footer__link--gold {
+  color: var(--gold);
 }
 
 .footer__link:hover,

@@ -1,10 +1,15 @@
-/* ────────── Breakpoints ────────────────────────────────────
-   Mobile:  < 640px
-   Tablet:  640px – 900px   (--gutter 24px)
-   Desktop: ≥ 900px         (--gutter 48px, navbar switches, 12-col layouts kick in)
-   Large:   ≥ 1280px        (.container reaches its 1280px max-width)
-   Wide:    ≥ 1600px        (.container stays at 1280px; the extra width becomes
-                             side margin so line lengths and grid rhythm don't stretch)
+/* ────────── Breakpoints (mobile-first) ─────────────────────
+   Base styles are for phones; enhance upwards with min-width only:
+     @media (min-width: 640px)   tablet
+     @media (min-width: 900px)   desktop (navbar switches, 12-col layouts kick in)
+     @media (min-width: 1280px)  large
+     @media (min-width: 1600px)  wide (text stays capped by .container at 1440px;
+                                 media can bleed past it with .bleed)
+   No max-width media queries. Interaction queries are fine:
+     (hover: hover) and (pointer: fine), (hover: none),
+     (orientation: landscape) and (max-height: 500px) for phones in landscape.
+   --gutter and --space-section are fluid (clamp), so they need no breakpoints.
+   VideoCard adapts to its column with a container query, not the viewport.
 ────────────────────────────────────────────────────────── */
 
 /* ────────── Fonts (self-hosted, Latin subset) ────────── */
@@ -106,7 +111,7 @@
   /* off-white family */
   --text: #f0ece4;
   --text-dim: #a09a90;
-  --muted: #555555;
+  --muted: #808080;            /* 5:1 on --bg, 4.8:1 on --surface: WCAG AA for small text */
 
   /* gold family */
   --gold: #c9a84c;
@@ -160,22 +165,18 @@
   --cursor-disc: 72px;
 
   /* layout */
-  --gutter: 16px;
-  --container: 1280px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --space-section: clamp(var(--space-08), 10vw, var(--space-11)); /* section padding */
+  --container: 1440px;
+  --tap: 44px;                  /* minimum touch target */
+  --fab: 48px;                  /* floating WhatsApp button (WhatsAppButton.vue) */
   --nav-height-desktop: 72px;
   --nav-height-mobile: 64px;
   --nav-h: var(--nav-height-mobile); /* height of whichever navbar is showing */
 }
 
-@media (min-width: 640px) {
-  :root {
-    --gutter: 24px;
-  }
-}
-
 @media (min-width: 900px) {
   :root {
-    --gutter: 48px;
     --nav-h: var(--nav-height-desktop);
   }
 }
@@ -205,6 +206,8 @@ html {
 }
 
 body {
+  /* Notched phones in landscape: keep content off the cut-out (needs viewport-fit=cover) */
+  padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
   color: var(--text);
   font-family: var(--sans);
   font-size: var(--fs-body);
@@ -230,6 +233,13 @@ video {
 
 button {
   font: inherit;
+}
+
+/* iOS Safari zooms into inputs under 16px on focus */
+input,
+select,
+textarea {
+  font-size: max(16px, var(--fs-body));
 }
 
 a {
@@ -328,6 +338,7 @@ a {
   font-size: var(--fs-label);
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  min-height: var(--tap);
   padding: 14px 28px;
   border-radius: 0;
   cursor: pointer;
@@ -393,7 +404,7 @@ a {
 
 .section {
   padding-inline: var(--gutter);
-  padding-block: var(--space-10);
+  padding-block: var(--space-section);
 }
 
 .section--flush-top {
@@ -409,6 +420,14 @@ a {
   width: 100%;
   max-width: var(--container);
   margin-inline: auto;
+}
+
+/* Media that runs past the container (and the section gutter) to the viewport edges,
+   while text around it stays capped. Use inside a .section. */
+.bleed {
+  width: 100vw;
+  max-width: none;
+  margin-inline: calc(50% - 50vw);
 }
 
 /* 12-column grid. Children set their own grid-column; on mobile everything

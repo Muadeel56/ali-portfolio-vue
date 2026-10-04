@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { vReleaseMedia } from '@/composables/useVideoPreview.js'
 import { cdn, findVideo, showreel, posterAttrs, isSlowConnection, prefersReducedMotion } from '@/data/videos.js'
 import AppButton from '../ui/AppButton.vue'
+import AvailabilityBadge from '../ui/AvailabilityBadge.vue'
 import VideoPlayerModal from '../ui/VideoPlayerModal.vue'
 
 const reelVideo = findVideo(showreel.videoSlug)
@@ -141,6 +142,8 @@ watch(modalOpen, syncPlayback)
     </div>
 
     <div class="hero__content container">
+      <!-- In the flow on phones (no room beside the timecode); top-left corner from 640px -->
+      <AvailabilityBadge class="hero__availability" />
       <p class="t-label hero__eyebrow">{{ showreel.eyebrow }}</p>
       <!-- Every line is in the DOM from the start; the mask only animates its position. -->
       <h1 id="hero-title" class="t-display-hero hero__title">
@@ -168,10 +171,10 @@ watch(modalOpen, syncPlayback)
 
     <div class="hero__corners t-mono">
       <p><b>{{ showreel.hud.left }}</b></p>
-      <p class="hero__corner-r"><b>{{ showreel.hud.right }}</b></p>
+      <p class="hero__corner-r"><b>{{ showreel.meta }}</b></p>
     </div>
 
-    <VideoPlayerModal v-model:open="modalOpen" :video="reelVideo" />
+    <VideoPlayerModal v-model:open="modalOpen" :video="reelVideo" source="hero" />
   </section>
 </template>
 
@@ -182,7 +185,7 @@ watch(modalOpen, syncPlayback)
   min-height: 100dvh;
   display: flex;
   align-items: center;
-  padding: calc(var(--nav-h) + var(--space-08)) var(--gutter) var(--space-10);
+  padding: calc(var(--nav-h) + var(--space-08)) var(--gutter) var(--space-section);
   overflow: hidden;
   isolation: isolate;
   background: var(--bg);
@@ -261,11 +264,25 @@ watch(modalOpen, syncPlayback)
   margin-top: var(--space-07);
 }
 
+/* ── Availability: in the flow on phones, top-left corner from 640px ── */
+.hero__availability {
+  margin-bottom: var(--space-05);
+}
+
+@media (min-width: 640px) {
+  .hero__availability {
+    position: absolute;
+    top: calc(var(--nav-h) + var(--space-05));
+    left: calc(var(--gutter) + env(safe-area-inset-left));
+    margin: 0;
+  }
+}
+
 /* ── Running timecode, top right ── */
 .hero__timecode {
   position: absolute;
   top: calc(var(--nav-h) + var(--space-05));
-  right: var(--gutter);
+  right: calc(var(--gutter) + env(safe-area-inset-right));
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
 }
@@ -273,9 +290,9 @@ watch(modalOpen, syncPlayback)
 /* ── Bottom corners (wrap onto two lines on narrow phones) ── */
 .hero__corners {
   position: absolute;
-  left: var(--gutter);
-  right: var(--gutter);
-  bottom: var(--space-06);
+  left: calc(var(--gutter) + env(safe-area-inset-left));
+  right: calc(var(--gutter) + env(safe-area-inset-right));
+  bottom: calc(var(--space-06) + env(safe-area-inset-bottom));
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -291,9 +308,50 @@ watch(modalOpen, syncPlayback)
   text-align: right;
 }
 
-@media (max-width: 639px) {
+/* Phones: full-width CTAs */
+.hero__ctas > * {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 640px) {
   .hero__ctas > * {
-    flex: 1 1 100%;
+    flex: 0 1 auto;
+  }
+}
+
+/* Phones in landscape: shorter headline and spacing so the CTAs stay on the first screen */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero {
+    padding-top: calc(var(--nav-h) + var(--space-06));
+    padding-bottom: var(--space-08);
+  }
+
+  .hero__availability {
+    top: calc(var(--nav-h) + var(--space-03));
+  }
+
+  .hero__timecode {
+    top: calc(var(--nav-h) + var(--space-03));
+  }
+
+  .hero__title {
+    font-size: min(var(--fs-display), 12svh);
+  }
+
+  .hero__eyebrow {
+    margin-bottom: var(--space-03);
+  }
+
+  .hero__intro {
+    margin-top: var(--space-04);
+  }
+
+  .hero__ctas {
+    margin-top: var(--space-04);
+  }
+
+  .hero__corners {
+    bottom: calc(var(--space-04) + env(safe-area-inset-bottom));
   }
 }
 
