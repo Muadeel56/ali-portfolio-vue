@@ -1,7 +1,9 @@
 <script setup>
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { activePreviewId, previewEnter, previewLeave, useVideoPreview, vReleaseMedia } from '@/composables/useVideoPreview.js'
-import { videos, chapters, findVideo, posterAttrs, cdn } from '@/data/videos.js'
+import { useParallax } from '@/composables/useMotion.js'
+import { chapters, chapterFilms, findVideo, posterAttrs, cdn } from '@/data/videos.js'
 import SectionHeader from '../ui/SectionHeader.vue'
 import Rule from '../ui/Rule.vue'
 
@@ -13,6 +15,9 @@ defineProps({
 // Hover/focus previews only: on touch devices the rows show their poster.
 useVideoPreview(null)
 
+const rootRef = ref(null)
+useParallax(rootRef)
+
 // Namespaced so a chapter preview never starts a VideoCard that shares the same video.
 const previewKey = (chapter) => `chapter:${chapter.id}`
 
@@ -22,13 +27,13 @@ const rows = chapters.map((chapter) => {
     ...chapter,
     video,
     poster: posterAttrs(video),
-    count: videos.filter((v) => chapter.categories.includes(v.category)).length,
+    count: chapterFilms(chapter).length,
   }
 })
 </script>
 
 <template>
-  <section class="section work-chapters" aria-labelledby="chapters-title">
+  <section ref="rootRef" class="section work-chapters" aria-labelledby="chapters-title">
     <div class="container">
       <SectionHeader
         title-id="chapters-title"
@@ -37,7 +42,7 @@ const rows = chapters.map((chapter) => {
         eyebrow="Range"
         title="Five chapters of work"
         accent="chapters"
-        intro="From weddings to brand campaigns, documentaries, social cuts and live events."
+        intro="Brand films, fashion campaigns, documentaries, social cuts and weddings."
       />
 
       <ol class="work-chapters__list">
@@ -50,7 +55,7 @@ const rows = chapters.map((chapter) => {
             @focus="previewEnter(previewKey(row))"
             @blur="previewLeave(previewKey(row))"
           >
-            <span class="work-chapters__num">{{ row.number }}</span>
+            <span class="work-chapters__num" data-parallax>{{ row.number }}</span>
             <span class="work-chapters__body">
               <span class="work-chapters__title t-display-h3">{{ row.title }}</span>
               <span class="work-chapters__meta">{{ String(row.count).padStart(2, '0') }} films</span>

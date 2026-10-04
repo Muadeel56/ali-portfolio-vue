@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { activePreviewId, previewEnter, previewLeave, vReleaseMedia } from '@/composables/useVideoPreview.js'
-import { cdn, posterAttrs, formatDuration } from '@/data/videos.js'
+import { cdn, posterAttrs, filmMeta } from '@/data/videos.js'
 
 const props = defineProps({
   // An entry from src/data/videos.js
@@ -14,7 +14,7 @@ const props = defineProps({
     default: null,
     validator: (v) => ['16:9', '9:16'].includes(v),
   },
-  // Eager, high-priority poster for cards above the fold
+  // Eager, high-priority poster for cards above the fold (never shutter-revealed)
   priority: {
     type: Boolean,
     default: false,
@@ -32,27 +32,14 @@ const props = defineProps({
 
 const emit = defineEmits(['play'])
 
-const ratio = computed(() => props.aspect ?? (props.video.orientation === 'portrait' ? '9:16' : '16:9'))
+const ratio = computed(() => props.aspect ?? props.video.aspect)
 const poster = computed(() => posterAttrs(props.video))
 const posterSizes = computed(() => props.sizes ?? (ratio.value === '9:16' ? '(max-width: 639px) 50vw, 25vw' : '(max-width: 899px) 100vw, 50vw'))
-const isPreviewing = computed(() => activePreviewId.value === props.video.id)
-
-// CLIENT · YEAR · TYPE · LENGTH (`tag` is "2026 · Corporate Event")
-const caption = computed(() => {
-  const [year, type] = (props.video.tag ?? '').split('·').map((part) => part.trim())
-  return [props.video.category, year, type, formatDuration(props.video.duration)].filter(Boolean).join(' · ')
-})
-
-// "Play" cursor label follows the pointer (shown on fine pointers only, see CSS)
-const thumbRef = ref(null)
+const isPreviewing = computed(() => activePreviewId.value === props.video.slug)
+const caption = computed(() => filmMeta(props.video))
 
 // Poster missing on the CDN (e.g. not uploaded yet): show a quiet placeholder, not a broken image.
 const posterFailed = ref(false)
-const onPointerMove = (e) => {
-  const rect = thumbRef.value.getBoundingClientRect()
-  thumbRef.value.style.setProperty('--cx', `${e.clientX - rect.left}px`)
-  thumbRef.value.style.setProperty('--cy', `${e.clientY - rect.top}px`)
-}
 
 const play = () => emit('play', props.video)
 </script>
@@ -63,15 +50,16 @@ const play = () => emit('play', props.video)
     :class="`video-card--${ratio === '9:16' ? 'portrait' : 'landscape'}`"
     role="button"
     tabindex="0"
-    :data-id="video.id"
+    :data-slug="video.slug"
     :aria-label="`Play ${video.title}`"
     @click="play"
     @keydown.enter.prevent="play"
     @keydown.space.prevent="play"
-    @mouseenter="previewEnter(video.id)"
-    @mouseleave="previewLeave(video.id)"
+    @mouseenter="previewEnter(video.slug)"
+    @mouseleave="previewLeave(video.slug)"
   >
-    <div ref="thumbRef" class="video-card__thumb" @pointermove="onPointerMove">
+    <!-- data-shutter: clip-path reveal on scroll (useShutter); data-cursor: the global PLAY cursor -->
+    <div class="video-card__thumb" :data-shutter="priority ? undefined : ''" data-cursor="play">
       <span v-if="posterFailed" class="video-card__missing" aria-hidden="true">Coming soon</span>
       <img
         v-else
@@ -100,7 +88,6 @@ const play = () => emit('play', props.video)
         aria-hidden="true"
         @contextmenu.prevent
       />
-      <span class="video-card__cursor" aria-hidden="true">Play</span>
     </div>
 
     <template v-if="!bare">
@@ -152,42 +139,6 @@ const play = () => emit('play', props.video)
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
-}
-
-.video-card__cursor {
-  display: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .video-card__thumb {
-    cursor: none;
-  }
-
-  .video-card__cursor {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    transform: translate(calc(var(--cx, 50%) - 50%), calc(var(--cy, 50%) - 50%));
-    padding: var(--space-02) var(--space-03);
-    background: var(--overlay);
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: var(--mono);
-    font-weight: 500;
-    font-size: var(--fs-caption);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    line-height: 1;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity var(--dur-fast) var(--ease-out-expo);
-  }
-
-  .video-card__thumb:hover .video-card__cursor {
-    opacity: 1;
-  }
 }
 
 .video-card__title {

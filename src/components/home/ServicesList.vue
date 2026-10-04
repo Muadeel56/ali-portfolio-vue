@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import { services } from '@/data/services.js'
+import { services, serviceWorkLink } from '@/data/services.js'
 import SectionHeader from '../ui/SectionHeader.vue'
 import Rule from '../ui/Rule.vue'
 
@@ -33,7 +33,8 @@ defineProps({
             </div>
             <div class="services-list__links">
               <RouterLink
-                :to="{ path: '/work', hash: `#${service.chapter}` }"
+                v-if="serviceWorkLink(service)"
+                :to="serviceWorkLink(service)"
                 class="services-list__link"
                 :aria-label="`See ${service.title} work`"
               >See work</RouterLink>

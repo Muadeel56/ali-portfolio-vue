@@ -2,6 +2,7 @@
 import { testimonials } from '@/data/testimonials.js'
 import HomeHero from '../components/home/HomeHero.vue'
 import ClientMarquee from '../components/home/ClientMarquee.vue'
+import StatsRow from '../components/home/StatsRow.vue'
 import FeaturedFilms from '../components/home/FeaturedFilms.vue'
 import WorkChapters from '../components/home/WorkChapters.vue'
 import GradeCompare from '../components/home/GradeCompare.vue'
@@ -18,6 +19,7 @@ const total = testimonials.length ? '06' : '05'
   <main class="page-main">
     <HomeHero />
     <ClientMarquee />
+    <StatsRow />
     <FeaturedFilms number="01" :total="total" />
     <WorkChapters number="02" :total="total" />
     <GradeCompare number="03" :total="total" />

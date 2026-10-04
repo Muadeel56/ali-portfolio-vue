@@ -1,5 +1,6 @@
 // Shared by the home page, the /services page and the contact form.
 // `id` is used in /contact?service=<id>; `chapter` is a /work chapter id (see `chapters` in videos.js).
+// `workLink` overrides the "See work" target; with neither set, "See work" is hidden.
 export const services = [
   {
     id: 'wedding',
@@ -39,7 +40,9 @@ export const services = [
     title: 'Color Grading',
     desc: 'Standalone colour grading for footage already shot. LUT creation, scene-by-scene correction, and cinematic grade delivery — compatible with Premiere, Resolve, and Final Cut.',
     tags: ['Scene correction', 'LUT creation', 'Cinematic grade', 'All NLE formats'],
-    chapter: 'brand',
+    chapter: null,
+    // The before/after slider on the home page
+    workLink: '/#grading',
   },
   {
     id: 'podcast',
@@ -47,8 +50,13 @@ export const services = [
     title: 'Podcast Video Edit',
     desc: 'Multi-camera podcast edits with jump-cut cleaning, lower thirds, intro/outro, and highlight clip exports for social distribution.',
     tags: ['Multi-cam sync', 'Jump-cut clean', 'Lower thirds', 'Highlight clips'],
-    chapter: 'short-form',
+    // TODO: from Ali — a podcast sample, then a podcast chapter on /work
+    chapter: null,
   },
 ]
 
 export const findService = (id) => services.find((s) => s.id === id) ?? null
+
+// Where a service's "See work" link points, or null to hide it.
+export const serviceWorkLink = (service) =>
+  service.workLink ?? (service.chapter ? { path: '/work', hash: `#${service.chapter}` } : null)

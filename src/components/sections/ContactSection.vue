@@ -6,7 +6,6 @@ import { useScrollReveal } from '@/composables/useScrollReveal.js'
 import { contactInfo, socials } from '@/data/contact.js'
 import { services, findService } from '@/data/services.js'
 import { site } from '@/data/site.js'
-import SectionHeader from '../ui/SectionHeader.vue'
 import Rule from '../ui/Rule.vue'
 
 useScrollReveal('.contact-section .reveal')
@@ -67,24 +66,14 @@ const submit = async () => {
 </script>
 
 <template>
-  <section id="contact" class="section contact-section">
+  <section id="contact" class="section section--after-hero contact-section" aria-label="Contact details and project brief">
     <div class="container">
-
-      <SectionHeader
-        class="reveal"
-        number="04"
-        eyebrow="Contact"
-        title="Let's Create Something Together"
-        accent="Something"
-      />
 
       <div class="cs__grid grid-12">
 
         <!-- ── Left column ───────────────────────────── -->
         <div class="cs__left reveal">
-          <p class="cs__body t-body-large">
-            Every great project starts with a conversation. Whether you have a vision or just a feeling — reach out and let's make it real.
-          </p>
+          <p class="t-label cs__lead">Direct lines</p>
 
           <div class="cs__info">
             <div v-for="item in contactInfo" :key="item.label" class="cs__info-item">
@@ -258,15 +247,15 @@ const submit = async () => {
 }
 
 /* ─── Left column ──────────────────────────────────────────── */
-.cs__body {
-  max-width: 44ch;
+.cs__lead {
+  margin: 0;
 }
 
 .cs__info {
   display: flex;
   flex-direction: column;
   gap: var(--space-05);
-  margin-top: var(--space-07);
+  margin-top: var(--space-05);
 }
 
 .cs__info-item {
