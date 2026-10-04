@@ -1,0 +1,4 @@
+# Cloudflare Pages. Unknown paths already fall back to index.html (SPA mode, no top-level 404.html),
+# so only real redirects live here. The query string is kept; the #hash is kept by the browser.
+/videography    /work    301
+/videography/*  /work    301

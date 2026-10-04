@@ -2,6 +2,8 @@
 // Asset paths are relative to VITE_CDN_URL and are produced by scripts/encode-videos.sh
 // (see scripts/videos.csv). Files under v2/ are immutable: to change a video, give it a new slug.
 
+import { site } from './site.js'
+
 const CDN = import.meta.env.VITE_CDN_URL
 
 export const cdn = (path) => `${CDN}/${path}`
@@ -369,10 +371,79 @@ export const categoryOrder = [
   'Wedding Films',
 ]
 
+// The five chapters the Work page and the home page are organised by.
+// Each groups one or more `category` values. `leadId` is the landscape film shown large
+// at the top of the chapter on /work; `previewVideoId` plays on the home page chapter rows.
+// TODO: from Ali — confirm chapter names, descriptions and lead films.
+export const chapters = [
+  {
+    id: 'weddings',
+    number: '01',
+    title: 'Weddings',
+    desc: 'Bridal films and couple shoots, cut for the feeling of the day.',
+    categories: ['Wedding Films'],
+    leadId: 'kudsiya-bridal',
+    previewVideoId: 'kudsiya-bridal',
+  },
+  {
+    id: 'brand',
+    number: '02',
+    title: 'Brand & Commercial',
+    desc: 'Brand films, campaigns and corporate stories for companies and labels.',
+    categories: ['Touchstone Communications', 'Clothing Brand', 'Khais', 'Commercial', 'Real Estate'],
+    leadId: 'touchstone-brand-film',
+    previewVideoId: 'touchstone-brand-film',
+  },
+  {
+    id: 'documentary',
+    number: '03',
+    title: 'Documentary',
+    desc: 'Longer stories about people, health and the work they do.',
+    categories: ['Documentary'],
+    leadId: 'breast-cancer-awareness',
+    previewVideoId: 'breast-cancer-awareness',
+  },
+  {
+    id: 'short-form',
+    number: '04',
+    title: 'Short-form & Podcast',
+    desc: 'Talking heads, social cuts and podcasts built for the feed.',
+    categories: ['Short-form / Podcast'],
+    leadId: 'ioa-talks-interview',
+    previewVideoId: 'reliablebits-we-build-it',
+  },
+  {
+    id: 'events',
+    number: '05',
+    title: 'Events',
+    desc: 'Highlights from corporate events, workshops and stage shows.',
+    categories: ['Events'],
+    leadId: 'khushhali-anniversary-event',
+    previewVideoId: 'khushhali-anniversary-event',
+  },
+]
+
+export const findVideo = (id) => videos.find((v) => v.id === id) ?? null
+
+// Featured films on the home page, in display order (the first one is shown large).
+// The showreel film is left out so it doesn't repeat the hero. TODO: from Ali — pick the final three.
+export const featuredIds = ['touchstone-brand-film', 'kudsiya-bridal', 'breast-cancer-awareness']
+export const featuredVideos = featuredIds.map(findVideo)
+
 export const showreel = {
   // Plays the Premier League film until Ali sends a dedicated 60–90s reel.
   videoId: 'premier-league-highlights',
-  hud: { left: 'Ali Hassan', leftSub: 'Rawalpindi, Pakistan', right: 'Remote Editing', rightSub: 'Available Worldwide' },
+  // Short silent loop behind the home hero (scripts/encode-videos.sh --loop).
+  // TODO: from Ali — once the loop cut is encoded and uploaded, set
+  //   loop: 'v2/showreel/showreel-loop.mp4', loopPoster: 'v2/showreel/showreel-loop-poster'
+  // Until then the hero falls back to the reel film's 5s preview and poster.
+  loop: null,
+  loopPoster: null,
+  hud: { left: 'Rawalpindi · Remote Worldwide', right: site.availability },
+  // Home hero headline, one entry per line. TODO: from Ali — confirm copy.
+  eyebrow: 'Videographer & Editor',
+  headline: [{ text: 'Raw footage,' }, { text: 'cut into films' }, { text: 'people feel.', accent: true }],
+  intro: 'Weddings, brands and documentaries, edited and graded in Rawalpindi for clients worldwide.',
   title: 'A year, in motion.',
   meta: 'Selected Works · 2025–2026',
 }
@@ -393,12 +464,18 @@ export const posterAttrs = (video) => {
   }
 }
 
+// True for data saver and 2G/3G connections.
+export const isSlowConnection = () => {
+  const conn = navigator.connection
+  return Boolean(conn?.saveData) || ['slow-2g', '2g', '3g'].includes(conn?.effectiveType)
+}
+
+export const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
+
 // Chooses 720p for small/dense screens, slow connections and data saver; otherwise 1080p.
 export const pickSource = (video) => {
-  const conn = navigator.connection
-  const slow = conn?.saveData || ['slow-2g', '2g', '3g'].includes(conn?.effectiveType)
   const small = window.innerWidth * window.devicePixelRatio <= 1440
-  return cdn(slow || small ? video.src[720] : (video.src[1080] ?? video.src[720]))
+  return cdn(isSlowConnection() || small ? video.src[720] : (video.src[1080] ?? video.src[720]))
 }
 
 export const formatDuration = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`

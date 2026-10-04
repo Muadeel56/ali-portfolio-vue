@@ -2,6 +2,7 @@
 import Rule from './Rule.vue'
 
 defineProps({
+  // Strings, or objects rendered through the #item slot (keyed by `name`)
   items: {
     type: Array,
     required: true,
@@ -16,18 +17,33 @@ defineProps({
     default: 'serif',
     validator: (v) => ['serif', 'mono'].includes(v),
   },
+  pauseOnHover: {
+    type: Boolean,
+    default: false,
+  },
 })
+
+const keyOf = (item) => (typeof item === 'string' ? item : item.name)
 </script>
 
 <template>
-  <div class="marquee" :class="`marquee--${variant}`" :style="{ '--marquee-speed': `${speed}s` }">
+  <div
+    class="marquee"
+    :class="[`marquee--${variant}`, { 'marquee--pausable': pauseOnHover }]"
+    :style="{ '--marquee-speed': `${speed}s` }"
+  >
     <Rule />
     <div class="marquee__inner">
       <ul class="marquee__track">
-        <li v-for="item in items" :key="item" class="marquee__item">{{ item }}</li>
+        <li v-for="item in items" :key="keyOf(item)" class="marquee__item">
+          <slot name="item" :item="item" :duplicate="false">{{ item }}</slot>
+        </li>
       </ul>
-      <ul class="marquee__track" aria-hidden="true">
-        <li v-for="item in items" :key="item" class="marquee__item">{{ item }}</li>
+      <!-- Duplicate track for the seamless loop; hidden from assistive tech -->
+      <ul class="marquee__track marquee__track--dup" aria-hidden="true">
+        <li v-for="item in items" :key="keyOf(item)" class="marquee__item">
+          <slot name="item" :item="item" :duplicate="true">{{ item }}</slot>
+        </li>
       </ul>
     </div>
     <Rule />
@@ -87,9 +103,27 @@ defineProps({
   }
 }
 
+.marquee--pausable:hover .marquee__inner {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: a static, wrapping row instead of a loop */
 @media (prefers-reduced-motion: reduce) {
   .marquee__inner {
-    animation-play-state: paused;
+    animation: none;
+    width: auto;
+    justify-content: center;
+  }
+
+  .marquee__track {
+    flex-shrink: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: var(--space-03);
+  }
+
+  .marquee__track--dup {
+    display: none;
   }
 }
 </style>

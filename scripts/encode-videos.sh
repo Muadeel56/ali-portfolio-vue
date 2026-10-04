@@ -13,6 +13,12 @@
 #   <slug>-preview.mp4       5s muted loop, short side 480, CRF 28 capped at 700 kbps
 #   <slug>-poster-640.webp   poster, long side 640
 #   <slug>-poster-1280.webp  poster, long side 1280 (capped at source size)
+#
+# Hero loop: scripts/encode-videos.sh --loop <input.mp4> <start-seconds>
+#   Cuts the silent background loop for the home hero from a showreel file:
+#   video-out/v2/showreel/showreel-loop.mp4 (12s, short side 720, no audio, ~2–3MB)
+#   and showreel-loop-poster-{640,1280}.webp (first frame, so the poster->video fade is seamless).
+#   Then set `showreel.loop` in src/data/videos.js to 'v2/showreel/showreel-loop.mp4'.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -21,12 +27,34 @@ OUT="$ROOT/video-out/v2"
 PREVIEW_LEN=5
 PREVIEW_MAX_BYTES=$((500 * 1024))
 
+LOOP_LEN=12
+
+if [[ "${1:-}" == "--loop" ]]; then
+  [[ $# -eq 3 ]] || { echo "usage: $0 --loop <input.mp4> <start-seconds>" >&2; exit 1; }
+  command -v ffmpeg >/dev/null || { echo "ffmpeg not found" >&2; exit 1; }
+  input="$2" start="$3" dir="$OUT/showreel"
+  [[ -f "$input" ]] || { echo "input not found: $input" >&2; exit 1; }
+  mkdir -p "$dir"
+  echo "== showreel loop (${LOOP_LEN}s from ${start}s)"
+  ffmpeg -nostdin -hide_banner -loglevel error -stats -y -ss "$start" -t "$LOOP_LEN" -i "$input" -an \
+    -c:v libx264 -profile:v high -crf 26 -maxrate 1800k -bufsize 3600k -preset slow -pix_fmt yuv420p \
+    -vf "scale='if(gt(iw,ih),-2,min(720,iw))':'if(gt(iw,ih),min(720,ih),-2)'" \
+    -movflags +faststart "$dir/showreel-loop.mp4"
+  for px in 640 1280; do
+    ffmpeg -nostdin -hide_banner -loglevel error -y -ss "$start" -i "$input" -frames:v 1 \
+      -vf "scale='if(gt(iw,ih),min($px,iw),-2)':'if(gt(iw,ih),-2,min($px,ih))'" -c:v libwebp -quality 80 \
+      "$dir/showreel-loop-poster-$px.webp"
+  done
+  ls -lh "$dir"
+  exit 0
+fi
+
 FORCE=0
 ONLY=()
 for arg in "$@"; do
   case "$arg" in
     --force) FORCE=1 ;;
-    -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,21p' "$0"; exit 0 ;;
     *) ONLY+=("$arg") ;;
   esac
 done

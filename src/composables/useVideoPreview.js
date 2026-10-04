@@ -33,7 +33,8 @@ export function previewLeave(id) {
 }
 
 // Hover-to-preview on desktop; on touch devices the single card most in view previews.
-// Cards matched by `selector` must carry a `data-id` attribute.
+// Cards matched by `selector` must carry a `data-id` attribute. Pass `null` for hover-only
+// previews (touch devices then show posters only).
 // Previews are disabled entirely for data saver and reduced motion.
 export function useVideoPreview(selector) {
   let observer
@@ -59,7 +60,7 @@ export function useVideoPreview(selector) {
     if (!enabled) return
 
     canHover = matchMedia('(hover: hover) and (pointer: fine)').matches
-    if (canHover) return
+    if (canHover || !selector) return
 
     observer = new IntersectionObserver(
       (entries) => {
@@ -78,5 +79,13 @@ export function useVideoPreview(selector) {
     activePreviewId.value = null
   })
 
-  return { activePreviewId, onEnter: previewEnter, onLeave: previewLeave }
+  // Re-scan for cards after the page swaps its content (e.g. Work page tabs).
+  const refresh = () => {
+    if (!observer) return
+    observer.disconnect()
+    ratios.clear()
+    document.querySelectorAll(selector).forEach((el) => observer.observe(el))
+  }
+
+  return { activePreviewId, onEnter: previewEnter, onLeave: previewLeave, refresh }
 }

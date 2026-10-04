@@ -147,12 +147,16 @@
   --dur-loop: 2000ms;           /* ambient loops (status blink) */
   --ease-linear: linear;        /* constant-speed loops (marquee, spinner) */
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-cut-out: 150ms;         /* route change: old page fades to black */
+  --dur-cut-hold: 80ms;         /* route change: hold on black before the new page cuts in */
+  --dur-stagger: 80ms;          /* delay between lines in a staggered reveal */
 
   /* layout */
   --gutter: 16px;
   --container: 1280px;
   --nav-height-desktop: 72px;
   --nav-height-mobile: 64px;
+  --nav-h: var(--nav-height-mobile); /* height of whichever navbar is showing */
 }
 
 @media (min-width: 640px) {
@@ -164,6 +168,7 @@
 @media (min-width: 900px) {
   :root {
     --gutter: 48px;
+    --nav-h: var(--nav-height-desktop);
   }
 }
 
@@ -364,7 +369,8 @@ a {
 
 /* ────────── Layout ────────── */
 .page-main {
-  overflow-x: hidden;
+  /* clip, not hidden: hidden makes a scroll container and breaks position: sticky inside pages */
+  overflow-x: clip;
 }
 
 .section {
@@ -392,6 +398,52 @@ a {
 
 .grid-12 > * {
   grid-column: 1 / -1;
+}
+
+/* Anchored sections land below the fixed navbar */
+[id] {
+  scroll-margin-top: var(--nav-h);
+}
+
+/* Hidden visually, still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Keyboard focus ring for custom controls */
+:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ────────── Route "cut" ──────────
+   Fades to black over --dur-cut-out, holds, then drops instantly when the new page is in.
+   Sits under the navbar (z-index 100) so the chrome stays put. */
+.route-cut {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.route-cut--on {
+  opacity: 1;
+  transition: opacity var(--dur-cut-out) var(--ease-in-out);
+}
+
+/* No double navigations mid-cut */
+.is-cutting body {
+  pointer-events: none;
 }
 
 /* ────────── Scroll reveal ────────── */

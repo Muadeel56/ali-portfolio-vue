@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import AppButton from './AppButton.vue'
 import Rule from './Rule.vue'
 
@@ -9,7 +8,7 @@ const props = defineProps({
     type: String,
     default: "Let's create something together",
   },
-  // Word inside `title` rendered in gold
+  // Word or phrase inside `title` rendered in gold
   accent: {
     type: String,
     default: 'together',
@@ -27,8 +26,6 @@ const props = defineProps({
     default: '',
   },
 })
-
-const router = useRouter()
 
 const titleParts = computed(() => {
   const i = props.accent ? props.title.indexOf(props.accent) : -1
@@ -50,7 +47,7 @@ const titleParts = computed(() => {
           {{ titleParts.before }}<span v-if="titleParts.accent" class="accent">{{ titleParts.accent }}</span>{{ titleParts.after }}
         </h2>
         <div class="cta-block__action">
-          <AppButton variant="primary" show-arrow @click="router.push(to)">{{ label }}</AppButton>
+          <AppButton variant="primary" show-arrow :to="to">{{ label }}</AppButton>
           <p v-if="caption" class="cta-block__caption">{{ caption }}</p>
         </div>
       </div>
