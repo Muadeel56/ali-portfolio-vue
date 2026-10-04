@@ -117,10 +117,12 @@ const onClick = (id) => {
 .chapter-nav__track {
   display: flex;
   align-items: center;
-  gap: var(--space-06);
+  /* Links carry their own padding, so the visual gap stays --space-06 */
+  gap: var(--space-02);
   height: var(--space-07);
   overflow-x: auto;
   scrollbar-width: none;
+  touch-action: pan-x pan-y;
 }
 
 .chapter-nav__track::-webkit-scrollbar {
@@ -137,6 +139,15 @@ const onClick = (id) => {
   text-decoration: none;
   white-space: nowrap;
   transition: color var(--dur-fast) var(--ease-out-expo);
+  /* 44px tall hit area inside the 48px bar */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding-inline: var(--space-03);
+}
+
+.chapter-nav__link:first-child {
+  padding-left: 0;
 }
 
 .chapter-nav__num {

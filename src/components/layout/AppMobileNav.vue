@@ -2,8 +2,8 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
-import { site } from '@/data/site.js'
 import AppButton from '../ui/AppButton.vue'
+import AvailabilityBadge from '../ui/AvailabilityBadge.vue'
 import Rule from '../ui/Rule.vue'
 
 const route = useRoute()
@@ -37,8 +37,10 @@ const onKeydown = (e) => {
 // Close the menu whenever a navigation happens (link click, back/forward)
 watch(() => route.fullPath, close)
 
+// html.is-menu-open also hides the floating WhatsApp button
 watch(isOpen, (open) => {
   document.body.style.overflow = open ? 'hidden' : ''
+  document.documentElement.classList.toggle('is-menu-open', open)
 })
 
 onMounted(() => {
@@ -51,6 +53,7 @@ onUnmounted(() => {
   clearInterval(timer)
   window.removeEventListener('keydown', onKeydown)
   document.body.style.overflow = ''
+  document.documentElement.classList.remove('is-menu-open')
 })
 </script>
 
@@ -98,7 +101,7 @@ onUnmounted(() => {
           </AppButton>
           <div class="mobile-nav__foot">
             <span><b>Rawalpindi</b> · {{ timeLine }}</span>
-            <span>{{ site.availability }}</span>
+            <AvailabilityBadge />
           </div>
         </div>
       </div>
@@ -107,13 +110,10 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.mobile-nav {
-  display: none;
-}
-
-@media (max-width: 899px) {
+/* Below 900px only: AppNavbar takes over on desktop */
+@media (min-width: 900px) {
   .mobile-nav {
-    display: block;
+    display: none;
   }
 }
 
@@ -123,8 +123,8 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 110;
-  height: var(--nav-height-mobile);
-  padding: 0 var(--gutter);
+  height: calc(var(--nav-height-mobile) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) calc(var(--gutter) + env(safe-area-inset-right)) 0 calc(var(--gutter) + env(safe-area-inset-left));
   background: var(--bg);
   display: flex;
   align-items: center;
@@ -142,13 +142,16 @@ onUnmounted(() => {
   text-decoration: none;
   background: none;
   border: none;
-  padding: 0;
+  /* 44px tall hit area */
+  padding: 13px 0;
   cursor: pointer;
 }
 
 .mobile-nav__hamburger {
-  width: 24px;
-  height: 14px;
+  /* 44px hit area around the 24×14 icon */
+  width: var(--tap);
+  height: var(--tap);
+  margin-right: -10px;
   position: relative;
   cursor: pointer;
   background: transparent;
@@ -158,7 +161,7 @@ onUnmounted(() => {
 
 .mobile-nav__hamburger span {
   position: absolute;
-  left: 0;
+  left: 10px;
   width: 24px;
   height: 1px;
   background: var(--gold);
@@ -169,19 +172,19 @@ onUnmounted(() => {
 }
 
 .mobile-nav__hamburger span:nth-child(1) {
-  top: 0;
+  top: 15px;
 }
 
 .mobile-nav__hamburger span:nth-child(2) {
-  top: 7px;
+  top: 22px;
 }
 
 .mobile-nav__hamburger span:nth-child(3) {
-  top: 14px;
+  top: 29px;
 }
 
 .mobile-nav__hamburger--open span:nth-child(1) {
-  top: 7px;
+  top: 22px;
   transform: rotate(45deg);
 }
 
@@ -190,20 +193,20 @@ onUnmounted(() => {
 }
 
 .mobile-nav__hamburger--open span:nth-child(3) {
-  top: 7px;
+  top: 22px;
   transform: rotate(-45deg);
 }
 
 .mobile-nav__menu {
   position: fixed;
-  top: var(--nav-height-mobile);
+  top: calc(var(--nav-height-mobile) + env(safe-area-inset-top));
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 109;
   display: flex;
   flex-direction: column;
-  padding: 0 var(--gutter);
+  padding: 0 calc(var(--gutter) + env(safe-area-inset-right)) 0 calc(var(--gutter) + env(safe-area-inset-left));
   background: var(--bg);
   overflow: hidden;
 }
@@ -240,7 +243,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: var(--space-03);
   position: relative;
   z-index: 2;
 }
@@ -256,7 +259,11 @@ onUnmounted(() => {
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease-out-expo);
   position: relative;
-  padding: 4px 0;
+  /* 44px tall hit area */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: var(--space-02) var(--space-04);
   border: none;
   background: none;
 }
@@ -269,7 +276,7 @@ onUnmounted(() => {
 .mobile-nav__link--active::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: 2px;
   left: 50%;
   transform: translateX(-50%);
   width: 16px;
@@ -283,7 +290,7 @@ onUnmounted(() => {
 }
 
 .mobile-nav__cta-wrap {
-  padding: 24px 0 32px;
+  padding: 24px 0 calc(32px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -299,6 +306,7 @@ onUnmounted(() => {
 .mobile-nav__foot {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   font-family: var(--mono);
   font-size: var(--fs-caption);
@@ -310,6 +318,19 @@ onUnmounted(() => {
 .mobile-nav__foot b {
   color: var(--text-dim);
   font-weight: 500;
+}
+
+/* Phones in landscape: the menu is taller than the screen, so it scrolls instead of clipping */
+@media (orientation: landscape) and (max-height: 500px) {
+  .mobile-nav__menu {
+    overflow-y: auto;
+  }
+
+  .mobile-nav__links {
+    flex: none;
+    padding-block: var(--space-04);
+    gap: 0;
+  }
 }
 
 .menu-enter-active,

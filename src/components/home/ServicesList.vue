@@ -11,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <section class="section services-list" aria-labelledby="services-list-title">
+  <section class="section services-list" aria-labelledby="services-list-title" data-track-from="home">
     <div class="container">
       <SectionHeader
         title-id="services-list-title"
@@ -36,7 +36,7 @@ defineProps({
                 v-if="serviceWorkLink(service)"
                 :to="serviceWorkLink(service)"
                 class="services-list__link"
-                :aria-label="`See ${service.title} work`"
+                :aria-label="`See work: ${service.title}`"
               >See work</RouterLink>
               <RouterLink
                 :to="{ path: '/contact', query: { service: service.id } }"
@@ -93,8 +93,10 @@ defineProps({
   text-transform: uppercase;
   color: var(--text-dim);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: var(--space-01);
+  /* 44px tall hit area */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   transition:
     color var(--dur-fast) var(--ease-out-expo),
     border-color var(--dur-fast) var(--ease-out-expo);
@@ -107,7 +109,8 @@ defineProps({
 .services-list__link:hover,
 .services-list__link:focus-visible {
   color: var(--gold);
-  border-bottom-color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 6px;
 }
 
 @media (min-width: 900px) {

@@ -549,6 +549,20 @@ export const pickSource = (video) => {
   return cdn(isSlowConnection() || small ? video.src[720] : (video.src[1080] ?? video.src[720]))
 }
 
+// ISO 8601 duration for JSON-LD (VideoObject.duration): 118 → "PT1M58S".
+export const toIsoDuration = (s) => {
+  const total = Math.round(s)
+  const m = Math.floor(total / 60)
+  return `PT${m ? `${m}M` : ''}${total % 60}S`
+}
+
+// VideoObject.uploadDate: `published` ('2026-03' or '2026-03-14') when set, else 1 January of `year`.
+// TODO: from Ali — real publish dates per film, if he wants them accurate.
+export const uploadDate = (video) => {
+  const parts = String(video.published ?? video.year).split('-')
+  return [parts[0], parts[1] ?? '01', parts[2] ?? '01'].join('-')
+}
+
 export const formatDuration = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`
 
 // CLIENT · YEAR · TYPE · LENGTH, the caption under every film.

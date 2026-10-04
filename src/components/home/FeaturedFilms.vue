@@ -61,7 +61,7 @@ const sizes = ['(max-width: 899px) 100vw, 66vw', '(max-width: 899px) 100vw, 33vw
       </div>
     </div>
 
-    <VideoPlayerModal v-model:open="modalOpen" v-model:video="modalVideo" :playlist="featuredVideos" />
+    <VideoPlayerModal v-model:open="modalOpen" v-model:video="modalVideo" :playlist="featuredVideos" source="home" />
   </section>
 </template>
 

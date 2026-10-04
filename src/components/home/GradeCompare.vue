@@ -44,7 +44,7 @@ const onPointerUp = () => {
 </script>
 
 <template>
-  <section id="grading" class="section grade-compare" aria-labelledby="grade-title">
+  <section id="grading" class="section grade-compare" aria-labelledby="grade-title" data-track-from="home">
     <div class="container">
       <SectionHeader
         title-id="grade-title"

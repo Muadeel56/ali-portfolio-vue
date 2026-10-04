@@ -4,6 +4,8 @@ import { vReleaseMedia } from '@/composables/useVideoPreview.js'
 import { pickSource, filmMeta, chapterForVideo } from '@/data/videos.js'
 import { findService } from '@/data/services.js'
 import { site } from '@/data/site.js'
+import { track } from '@/composables/useAnalytics.js'
+import { whatsappService } from '@/composables/useWhatsApp.js'
 import AppButton from './AppButton.vue'
 import Rule from './Rule.vue'
 
@@ -16,6 +18,11 @@ const props = defineProps({
   playlist: {
     type: Array,
     default: () => [],
+  },
+  // Analytics only: where the player was opened from ('work', 'home', 'hero' or 'link')
+  source: {
+    type: String,
+    default: 'work',
   },
 })
 
@@ -54,6 +61,16 @@ const onEnded = () => {
   nextTick(() => enquiryRef.value?.$el?.focus())
 }
 
+// ── Analytics: one "Video Play" per film per open (Prev/Next counts as a new film) ──
+let trackedSlug = null
+
+const onPlay = () => {
+  ended.value = false
+  if (film.value.slug === trackedSlug) return
+  trackedSlug = film.value.slug
+  track('Video Play', { slug: film.value.slug, chapter: film.value.category, source: props.source })
+}
+
 const watchAgain = () => {
   ended.value = false
   const video = videoRef.value
@@ -76,6 +93,7 @@ const copyLink = async () => {
   }
   copied.value = true
   announcement.value = 'Link copied'
+  track('Copy Film Link', { slug: film.value.slug })
   clearTimeout(copiedTimer)
   copiedTimer = setTimeout(() => {
     copied.value = false
@@ -185,6 +203,8 @@ watch(
     } else if (before) {
       unlockPage()
       restoreFocus()
+      trackedSlug = null
+      whatsappService.value = null
     }
   },
   { immediate: true },
@@ -202,9 +222,21 @@ watch(
   { immediate: true },
 )
 
+// WhatsApp messages mention the service of the film on screen
+watch(
+  [isOpen, service],
+  ([now, current]) => {
+    if (now) whatsappService.value = current
+  },
+  { immediate: true },
+)
+
 onUnmounted(() => {
   clearTimeout(copiedTimer)
-  if (isOpen.value) unlockPage()
+  if (isOpen.value) {
+    unlockPage()
+    whatsappService.value = null
+  }
 })
 </script>
 
@@ -274,11 +306,11 @@ onUnmounted(() => {
               @contextmenu.prevent
               @error="failed = true"
               @ended="onEnded"
-              @play="ended = false"
+              @play="onPlay"
             />
 
             <Transition name="end">
-              <div v-if="ended" class="player-modal__end">
+              <div v-if="ended" class="player-modal__end" data-track-from="end-screen">
                 <AppButton ref="enquiryRef" variant="primary" show-arrow :to="enquiry.to">{{ enquiry.label }}</AppButton>
                 <div class="player-modal__end-links">
                   <button type="button" class="player-modal__btn" @click="watchAgain">Watch again</button>
@@ -346,7 +378,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-03) var(--space-04);
-  padding: var(--space-04) var(--gutter);
+  padding: calc(var(--space-04) + env(safe-area-inset-top)) calc(var(--gutter) + env(safe-area-inset-right)) var(--space-04)
+    calc(var(--gutter) + env(safe-area-inset-left));
 }
 
 .player-modal__title {
@@ -387,6 +420,7 @@ onUnmounted(() => {
   background: none;
   border: 1px solid var(--rule);
   border-radius: 0;
+  min-height: var(--tap);
   padding: var(--space-02) var(--space-04);
   cursor: pointer;
   transition:
@@ -412,7 +446,10 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--gutter);
+  padding: var(--gutter) calc(var(--gutter) + env(safe-area-inset-right)) calc(var(--gutter) + env(safe-area-inset-bottom))
+    calc(var(--gutter) + env(safe-area-inset-left));
+  /* Horizontal swipes reach the Prev/Next handler; vertical pans stay with the browser */
+  touch-action: pan-y;
 }
 
 .player-modal__video {
@@ -506,9 +543,14 @@ onUnmounted(() => {
   transition: transform var(--dur-fast) var(--ease-in-out) calc(var(--dur-fast) / 2);
 }
 
-@media (max-width: 639px) {
+/* Film details crowd the bar on phones */
+.player-modal__meta {
+  display: none;
+}
+
+@media (min-width: 640px) {
   .player-modal__meta {
-    display: none;
+    display: inline;
   }
 }
 </style>

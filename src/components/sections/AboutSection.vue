@@ -182,7 +182,7 @@ useScrollReveal('.about-section .reveal')
 
 .about-section__facts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   margin: var(--space-07) 0 0;
   border-top: 1px solid var(--rule);
 }
@@ -237,17 +237,21 @@ useScrollReveal('.about-section .reveal')
   max-width: 40ch;
 }
 
-@media (max-width: 639px) {
+/* Phones: full-width CTAs, one fact per row */
+.about-section__ctas > * {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 640px) {
   .about-section__ctas > * {
-    flex: 1 1 100%;
+    flex: 0 1 auto;
   }
 
   .about-section__facts {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
-@media (min-width: 640px) and (max-width: 899px) {
+  /* Tablet: inset portrait (the 900px layout below takes over) */
   .about-section__media {
     grid-column: 2 / 12;
   }
