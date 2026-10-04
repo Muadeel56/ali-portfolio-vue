@@ -1,25 +1,131 @@
 /* ────────── Breakpoints ────────────────────────────────────
    Mobile:  < 640px
-   Tablet:  640px – 900px
-   Desktop: > 900px  (navbar switches at 900px)
-   Wide:    > 1280px (container max-width)
+   Tablet:  640px – 900px   (--gutter 24px)
+   Desktop: ≥ 900px         (--gutter 48px, navbar switches, 12-col layouts kick in)
+   Large:   ≥ 1280px        (.container reaches its 1280px max-width)
+   Wide:    ≥ 1600px        (.container stays at 1280px; the extra width becomes
+                             side margin so line lengths and grid rhythm don't stretch)
 ────────────────────────────────────────────────────────── */
+
+/* ────────── Fonts (self-hosted, Latin subset) ────────── */
+/* Bebas lives in public/ so index.html can preload it at a stable URL */
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url('/fonts/BebasNeue-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./fonts/DMSans-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./fonts/DMSans-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched fallbacks to limit layout shift while the web fonts load.
+   Values computed with @capsizecss/metrics and @capsizecss/unpack (xWidthAvg / ascent / descent). */
+/* Impact ships on Windows/macOS; Arial covers the rest. */
+@font-face {
+  font-family: 'Bebas Neue Fallback';
+  src: local('Impact');
+  size-adjust: 83.88%;
+  ascent-override: 107.29%;
+  descent-override: 35.76%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Bebas Neue Fallback Arial';
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 76.72%;
+  ascent-override: 117.32%;
+  descent-override: 39.11%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'DM Sans Fallback';
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 104.53%;
+  ascent-override: 94.9%;
+  descent-override: 29.66%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New'), local('Courier');
+  size-adjust: 99.98%;
+  ascent-override: 102.02%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
 
 /* ────────── Tokens ────────── */
 :root {
+  /* near-black family */
   --bg: #080808;
   --surface: #111111;
-  --border: #1e1e1e;
-  --gold: #c9a84c;
-  --gold-light: #e8c97a;
-  --muted: #555555;
+  --surface-2: #161616;
+  --surface-3: #1c1c1c;
+  --rule: #1e1e1e;
+  --overlay: rgba(8, 8, 8, 0.72);
+
+  /* off-white family */
   --text: #f0ece4;
   --text-dim: #a09a90;
-  --white: #ffffff;
+  --muted: #555555;
 
-  --serif: 'Bebas Neue', 'Impact', sans-serif;
-  --sans: 'DM Sans', -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* gold family */
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim: rgba(201, 168, 76, 0.28);
+
+  --serif: 'Bebas Neue', 'Bebas Neue Fallback', 'Bebas Neue Fallback Arial', sans-serif;
+  --sans: 'DM Sans', 'DM Sans Fallback', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, monospace;
+
+  /* type scale */
+  --fs-display: clamp(3rem, 9vw, 7.5rem);
+  --fs-h1: clamp(2.5rem, 6vw, 5rem);
+  --fs-h2: clamp(2rem, 4.5vw, 3.25rem);
+  --fs-h3: clamp(1.5rem, 2.5vw, 2rem);
+  --fs-body-lg: clamp(1rem, 1.2vw, 1.125rem);
+  --fs-body: clamp(0.875rem, 1vw, 1rem);
+  --fs-label: clamp(0.6875rem, 0.8vw, 0.75rem);
+  --fs-caption: clamp(0.625rem, 0.7vw, 0.6875rem);
 
   --space-01: 4px;
   --space-02: 8px;
@@ -33,24 +139,32 @@
   --space-10: 120px;
   --space-11: 160px;
 
+  /* motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 700ms;
+  --dur-loop: 2000ms;           /* ambient loops (status blink) */
+  --ease-linear: linear;        /* constant-speed loops (marquee, spinner) */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* layout */
+  --gutter: 16px;
+  --container: 1280px;
   --nav-height-desktop: 72px;
   --nav-height-mobile: 64px;
-  --transition-base: 200ms ease;
 }
 
-/* ────────── Bebas Neue — no italic, single weight ────────── */
-/* Override all component-level italic/weight on serif elements */
-h1, h2, h3, h4, h5, h6,
-[style*="--serif"],
-.vs__heading, .vs__reel-title, .vs__vtitle, .vs__bhead,
-.about-section__heading, .about-section__heading em,
-.services-section__heading, .services-section__heading em,
-.services-section__title, .services-section__bhead,
-.hs__title, .hs__title em,
-.ps__heading, .ps__heading em,
-.cs__heading, .cs__heading em,
-.nav__logo {
-  font-style: normal !important;
+@media (min-width: 640px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    --gutter: 48px;
+  }
 }
 
 /* ────────── Reset & base ────────── */
@@ -70,10 +184,19 @@ body {
 body {
   color: var(--text);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: var(--fs-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
 }
 
 img,
@@ -91,54 +214,38 @@ a {
 }
 
 ::selection {
-  background: rgba(201, 168, 76, 0.28);
+  background: var(--gold-dim);
   color: var(--text);
 }
 
 /* ────────── Typography ────────── */
-.t-display-hero {
+.t-display-hero,
+.t-display-h2,
+.t-display-h3 {
   font-family: var(--serif);
-  font-style: normal;
   font-weight: 400;
-  font-size: clamp(2.75rem, 8vw, 80px);
   line-height: 1;
   color: var(--text);
-  letter-spacing: 0.02em;
   margin: 0;
 }
 
-.t-display-hero em {
-  font-style: normal;
+.t-display-hero {
+  font-size: var(--fs-display);
+  letter-spacing: 0.01em;
 }
 
 .t-display-h2 {
-  font-family: var(--serif);
-  font-style: normal;
-  font-weight: 400;
-  font-size: clamp(2rem, 5vw, 52px);
-  line-height: 1;
-  color: var(--text);
-  margin: 0;
-}
-
-.t-display-h2 em {
-  font-style: normal;
+  font-size: var(--fs-h2);
 }
 
 .t-display-h3 {
-  font-family: var(--serif);
-  font-style: normal;
-  font-weight: 400;
-  font-size: clamp(1.5rem, 3vw, 32px);
-  line-height: 1;
-  color: var(--text);
-  margin: 0;
+  font-size: var(--fs-h3);
 }
 
 .t-body-large {
   font-family: var(--sans);
   font-weight: 400;
-  font-size: 16px;
+  font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-dim);
   margin: 0;
@@ -147,7 +254,7 @@ a {
 .t-body-small {
   font-family: var(--sans);
   font-weight: 400;
-  font-size: 14px;
+  font-size: var(--fs-body);
   line-height: 1.6;
   color: var(--text-dim);
   margin: 0;
@@ -156,7 +263,7 @@ a {
 .t-label {
   font-family: var(--sans);
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-label);
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
@@ -165,7 +272,7 @@ a {
 .t-caption {
   font-family: var(--sans);
   font-weight: 400;
-  font-size: 10px;
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
@@ -173,7 +280,8 @@ a {
 
 .t-mono {
   font-family: var(--mono);
-  font-size: 10px;
+  font-weight: 400;
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
@@ -185,61 +293,25 @@ a {
   font-weight: 500;
 }
 
-/* ────────── Eyebrow / section label ────────── */
-.eyebrow {
-  font-family: var(--sans);
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
+/* Emphasis inside headings: colour only, never italic */
+.accent {
   color: var(--gold);
-  font-weight: 500;
-  margin: 0 0 var(--space-05);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-04);
-}
-
-.eyebrow::after {
-  content: '';
-  width: 48px;
-  height: 1px;
-  background: var(--gold);
-  display: inline-block;
-}
-
-.seclabel {
-  display: inline-flex;
-  flex-direction: column;
-  gap: var(--space-03);
-  margin-bottom: var(--space-07);
-}
-
-.seclabel__text {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.seclabel__line {
-  width: 48px;
-  height: 1px;
-  background: var(--gold);
 }
 
 /* ────────── Buttons ────────── */
 .btn {
   font-family: var(--sans);
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-label);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   padding: 14px 28px;
   border-radius: 0;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
   border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
@@ -274,7 +346,7 @@ a {
 .btn-ghost {
   background: transparent;
   color: var(--text-dim);
-  border-color: var(--border);
+  border-color: var(--rule);
 }
 
 .btn-ghost:hover {
@@ -283,84 +355,11 @@ a {
 }
 
 .btn__arrow {
-  font-size: 10px;
   opacity: 0.7;
 }
 
 .btn--compact {
   padding: 10px 20px;
-}
-
-/* ────────── Form input ────────── */
-.input-field {
-  width: 100%;
-}
-
-.input-field__label {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
-  display: block;
-  margin-bottom: var(--space-04);
-}
-
-.input {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-03) 0;
-  font-family: var(--sans);
-  font-size: 14px;
-  color: var(--text);
-  outline: none;
-  border-radius: 0;
-  transition: border-color var(--transition-base);
-}
-
-.input::placeholder {
-  color: var(--muted);
-}
-
-.input:focus {
-  border-bottom-color: var(--gold);
-}
-
-/* ────────── Gold corner frame ────────── */
-.gold-frame {
-  position: relative;
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.015) 0 6px,
-      transparent 6px 12px
-    ),
-    var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.gold-frame__corner {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  pointer-events: none;
-}
-
-.gold-frame__corner--tl {
-  top: -1px;
-  left: -1px;
-  border-top: 1px solid var(--gold);
-  border-left: 1px solid var(--gold);
-}
-
-.gold-frame__corner--br {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 1px solid var(--gold);
-  border-right: 1px solid var(--gold);
 }
 
 /* ────────── Layout ────────── */
@@ -369,7 +368,7 @@ a {
 }
 
 .section {
-  padding-inline: clamp(var(--space-05), 5.5vw, var(--space-09));
+  padding-inline: var(--gutter);
   padding-block: var(--space-10);
 }
 
@@ -379,45 +378,29 @@ a {
 
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--container);
   margin-inline: auto;
 }
 
-.section-header {
+/* 12-column grid. Children set their own grid-column; on mobile everything
+   spans the full row unless a component says otherwise. */
+.grid-12 {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-06);
-  margin-bottom: var(--space-08);
-  padding-bottom: var(--space-06);
-  border-bottom: 1px solid var(--border);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
 }
 
-@media (min-width: 768px) {
-  .section-header {
-    grid-template-columns: minmax(200px, 280px) 1fr;
-    align-items: end;
-    gap: var(--space-07);
-  }
-}
-
-.section-header__num {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: var(--space-03);
-}
-
-.section-header__num span {
-  color: var(--gold);
+.grid-12 > * {
+  grid-column: 1 / -1;
 }
 
 /* ────────── Scroll reveal ────────── */
 .reveal {
   opacity: 0;
   transform: translateY(32px);
-  transition: all 0.7s ease;
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo);
 }
 
 .reveal.is-visible {
@@ -425,10 +408,19 @@ a {
   transform: translateY(0);
 }
 
+/* ────────── Reduced motion ────────── */
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
     transform: none;
-    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
