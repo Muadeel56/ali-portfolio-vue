@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
 import { contactInfo, socials } from '@/data/contact.js'
+import { site } from '@/data/site.js'
 import Rule from '../ui/Rule.vue'
 
 const year = new Date().getFullYear()
@@ -15,6 +16,10 @@ const year = new Date().getFullYear()
         <div class="footer__brand">
           <RouterLink to="/" class="footer__name">Ali's Portfolio</RouterLink>
           <p class="footer__tagline">Videography &amp; editing. Films that hold the silence between emotions.</p>
+          <p class="footer__status t-mono">
+            <span class="footer__dot" aria-hidden="true" />
+            <b>Available</b> · {{ site.availability }}
+          </p>
         </div>
 
         <nav class="footer__col footer__nav" aria-label="Footer">
@@ -30,7 +35,11 @@ const year = new Date().getFullYear()
           <p class="footer__heading">Contact</p>
           <ul class="footer__list">
             <li v-for="item in contactInfo" :key="item.label">
-              <a :href="item.href" class="footer__link">{{ item.text }}</a>
+              <a
+                :href="item.href"
+                class="footer__link"
+                v-bind="item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {}"
+              >{{ item.text }}</a>
             </li>
             <li v-for="social in socials" :key="social.label">
               <a :href="social.href" class="footer__link" target="_blank" rel="noopener noreferrer">{{ social.label }}</a>
@@ -39,7 +48,7 @@ const year = new Date().getFullYear()
         </div>
       </div>
       <Rule />
-      <p class="footer__legal">© {{ year }} Ali Hassan · Rawalpindi, PK · Remote worldwide</p>
+      <p class="footer__legal">© {{ year }} {{ site.name }} · {{ site.location }} · {{ site.reach }}</p>
     </div>
   </footer>
 </template>
@@ -70,6 +79,20 @@ const year = new Date().getFullYear()
   color: var(--text-dim);
   max-width: 32ch;
   margin: var(--space-04) 0 0;
+}
+
+.footer__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-02);
+  margin: var(--space-05) 0 0;
+}
+
+.footer__dot {
+  width: var(--space-02);
+  height: var(--space-02);
+  border-radius: 50%;
+  background: var(--gold);
 }
 
 .footer__heading {

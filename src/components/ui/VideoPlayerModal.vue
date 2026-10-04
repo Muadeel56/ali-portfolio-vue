@@ -15,6 +15,7 @@ defineProps({
 })
 
 const closeRef = ref(null)
+const failed = ref(false)
 let returnFocusTo = null
 
 const close = () => {
@@ -27,6 +28,7 @@ const onKeydown = (e) => {
 
 watch(open, (isOpen) => {
   if (isOpen) {
+    failed.value = false
     returnFocusTo = document.activeElement
     document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onKeydown)
@@ -64,15 +66,21 @@ onUnmounted(() => {
         <Rule />
 
         <div class="player-modal__stage">
+          <p v-if="failed" class="player-modal__error" role="alert">This film couldn't be loaded. Please try again later.</p>
+          <!-- No download button and no "Save video as…" menu -->
           <video
+            v-else
             :key="video.id"
             v-release-media
             class="player-modal__video"
             :class="{ 'player-modal__video--portrait': video.orientation === 'portrait' }"
             :src="cdn(video.src[1080] ?? video.src[720])"
             controls
+            controlslist="nodownload"
             autoplay
             playsinline
+            @contextmenu.prevent
+            @error="failed = true"
           />
         </div>
       </div>
@@ -150,6 +158,16 @@ onUnmounted(() => {
   width: auto;
   height: 100%;
   aspect-ratio: 9 / 16;
+}
+
+.player-modal__error {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin: 0;
 }
 
 .modal-enter-active,

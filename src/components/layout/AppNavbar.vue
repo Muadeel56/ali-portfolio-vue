@@ -1,10 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
 import AppButton from '../ui/AppButton.vue'
 
-const router = useRouter()
 const route = useRoute()
 const timeLine = ref('')
 const isScrolled = ref(false)
@@ -42,18 +41,17 @@ onUnmounted(() => {
 
 <template>
   <header class="nav" :class="{ 'nav--scrolled': isScrolled }">
-    <button type="button" class="nav__logo" @click="router.push('/')">Ali's Portfolio</button>
+    <RouterLink to="/" class="nav__logo">Ali's Portfolio</RouterLink>
 
     <ul class="nav__links">
       <li v-for="link in navLinks" :key="link.id">
-        <button
-          type="button"
+        <RouterLink
+          :to="link.path"
           class="nav__link"
           :class="{ 'nav__link--active': route.path === link.path }"
-          @click="router.push(link.path)"
         >
           {{ link.label }}
-        </button>
+        </RouterLink>
       </li>
     </ul>
 
@@ -62,7 +60,7 @@ onUnmounted(() => {
         <b>Rawalpindi · PKT</b>
         {{ timeLine }} — Remote
       </div>
-      <AppButton variant="outline" class="btn--compact" @click="router.push('/contact')">
+      <AppButton variant="outline" class="btn--compact" to="/contact">
         Book a Session
       </AppButton>
     </div>

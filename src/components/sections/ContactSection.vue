@@ -1,8 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import emailjs from '@emailjs/browser'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
 import { contactInfo, socials } from '@/data/contact.js'
+import { services, findService } from '@/data/services.js'
+import { site } from '@/data/site.js'
 import SectionHeader from '../ui/SectionHeader.vue'
 import Rule from '../ui/Rule.vue'
 
@@ -13,19 +16,27 @@ const EMAILJS_SERVICE_ID  = 'service_1paayws'
 const EMAILJS_TEMPLATE_ID = 'template_biy5qcs'
 const EMAILJS_PUBLIC_KEY  = 'TIMsqqL9WtG6PtJZG'
 
-const serviceOptions = [
-  'Wedding Films',
-  'Corporate & Brand Films',
-  'Talking Head Videos',
-  'Short Form Content',
-  'Podcast Production',
-  'Aerial / Drone Coverage',
-  'Custom Package',
-]
+const OTHER = { value: 'other', label: 'Something else' }
+const serviceOptions = [...services.map((sv) => ({ value: sv.id, label: sv.title })), OTHER]
+const serviceLabel = (value) => serviceOptions.find((o) => o.value === value)?.label ?? ''
 
 const form = ref({ name: '', email: '', service: '', message: '' })
 const focusedField = ref(null)
 const status = ref('idle') // idle | sending | success | error
+
+// Pre-fill from /contact?service=<id> (Enquire links). Unknown ids are ignored.
+// Watched, not just read on mount, so it also works when already on /contact.
+const route = useRoute()
+watch(
+  () => route.query.service,
+  (id) => {
+    const service = findService(id)
+    if (!service) return
+    form.value.service = service.id
+    if (!form.value.message) form.value.message = `I have footage for a ${service.title.toLowerCase()} project. `
+  },
+  { immediate: true },
+)
 
 const onFocus  = (field) => { focusedField.value = field }
 const onBlur   = ()      => { focusedField.value = null  }
@@ -42,7 +53,7 @@ const submit = async () => {
       {
         from_name:    form.value.name,
         from_email:   form.value.email,
-        service:      form.value.service,
+        service:      serviceLabel(form.value.service),
         message:      form.value.message,
       },
       EMAILJS_PUBLIC_KEY,
@@ -96,7 +107,7 @@ const submit = async () => {
 
           <p class="cs__status">
             <span class="cs__dot" aria-hidden="true" />
-            <b>Available</b> · Booking Q1 – Q2 2026
+            <b>Available</b> · {{ site.availability }}
           </p>
         </div>
 
@@ -175,7 +186,7 @@ const submit = async () => {
                   @blur="onBlur"
                 >
                   <option value="" disabled>Select a Service</option>
-                  <option v-for="s in serviceOptions" :key="s" :value="s">{{ s }}</option>
+                  <option v-for="o in serviceOptions" :key="o.value" :value="o.value">{{ o.label }}</option>
                 </select>
                 <span class="cs__select-arrow" aria-hidden="true" />
               </div>

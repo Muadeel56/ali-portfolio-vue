@@ -1,18 +1,12 @@
 <script setup>
-import { useRouter } from 'vue-router'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
 import SectionHeader from '../ui/SectionHeader.vue'
 import AppButton from '../ui/AppButton.vue'
 import Rule from '../ui/Rule.vue'
 
-const router = useRouter()
 const cdnUrl = import.meta.env.VITE_CDN_URL
 
 useScrollReveal('.about-section .reveal')
-
-const scrollTo = (path) => {
-  router.push(path)
-}
 </script>
 
 <template>
@@ -49,7 +43,7 @@ const scrollTo = (path) => {
           </div>
 
           <div class="about-section__ctas">
-            <AppButton variant="outline" show-arrow @click="scrollTo('/videography')">
+            <AppButton variant="outline" show-arrow to="/work">
               See My Work
             </AppButton>
           </div>

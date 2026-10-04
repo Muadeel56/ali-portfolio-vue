@@ -28,6 +28,11 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  // id for the <h2>, so a section can point aria-labelledby at it
+  titleId: {
+    type: String,
+    default: null,
+  },
 })
 
 const titleParts = computed(() => {
@@ -55,7 +60,7 @@ const titleParts = computed(() => {
       </div>
 
       <div class="section-header__main">
-        <h2 class="section-header__title">
+        <h2 :id="titleId" class="section-header__title">
           {{ titleParts.before }}<span v-if="titleParts.accent" class="accent">{{ titleParts.accent }}</span>{{ titleParts.after }}
         </h2>
         <p v-if="intro || $slots.default" class="section-header__intro">

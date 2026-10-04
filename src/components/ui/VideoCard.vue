@@ -23,6 +23,11 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  // Media only: the parent shows the title and details itself
+  bare: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['play'])
@@ -40,6 +45,9 @@ const caption = computed(() => {
 
 // "Play" cursor label follows the pointer (shown on fine pointers only, see CSS)
 const thumbRef = ref(null)
+
+// Poster missing on the CDN (e.g. not uploaded yet): show a quiet placeholder, not a broken image.
+const posterFailed = ref(false)
 const onPointerMove = (e) => {
   const rect = thumbRef.value.getBoundingClientRect()
   thumbRef.value.style.setProperty('--cx', `${e.clientX - rect.left}px`)
@@ -64,7 +72,9 @@ const play = () => emit('play', props.video)
     @mouseleave="previewLeave(video.id)"
   >
     <div ref="thumbRef" class="video-card__thumb" @pointermove="onPointerMove">
+      <span v-if="posterFailed" class="video-card__missing" aria-hidden="true">Coming soon</span>
       <img
+        v-else
         class="video-card__media"
         :src="poster.src"
         :srcset="poster.srcset"
@@ -75,6 +85,7 @@ const play = () => emit('play', props.video)
         :fetchpriority="priority ? 'high' : 'auto'"
         decoding="async"
         :alt="video.title"
+        @error="posterFailed = true"
       />
       <video
         v-if="isPreviewing"
@@ -87,12 +98,15 @@ const play = () => emit('play', props.video)
         playsinline
         preload="none"
         aria-hidden="true"
+        @contextmenu.prevent
       />
       <span class="video-card__cursor" aria-hidden="true">Play</span>
     </div>
 
-    <h3 class="video-card__title">{{ video.title }}</h3>
-    <p class="video-card__caption">{{ caption }}</p>
+    <template v-if="!bare">
+      <h3 class="video-card__title">{{ video.title }}</h3>
+      <p class="video-card__caption">{{ caption }}</p>
+    </template>
   </article>
 </template>
 
@@ -126,6 +140,18 @@ const play = () => emit('play', props.video)
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.video-card__missing {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .video-card__cursor {

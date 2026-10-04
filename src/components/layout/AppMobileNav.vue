@@ -1,11 +1,11 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
+import { site } from '@/data/site.js'
 import AppButton from '../ui/AppButton.vue'
 import Rule from '../ui/Rule.vue'
 
-const router = useRouter()
 const route = useRoute()
 const isOpen = ref(false)
 const timeLine = ref('')
@@ -30,14 +30,12 @@ const close = () => {
   isOpen.value = false
 }
 
-const navigate = (path) => {
-  router.push(path)
-  close()
-}
-
 const onKeydown = (e) => {
   if (e.key === 'Escape' && isOpen.value) close()
 }
+
+// Close the menu whenever a navigation happens (link click, back/forward)
+watch(() => route.fullPath, close)
 
 watch(isOpen, (open) => {
   document.body.style.overflow = open ? 'hidden' : ''
@@ -59,7 +57,7 @@ onUnmounted(() => {
 <template>
   <header class="mobile-nav" :class="{ 'mobile-nav--open': isOpen }">
     <nav class="mobile-nav__bar">
-      <button type="button" class="mobile-nav__logo" @click="navigate('/')">Ali's Portfolio</button>
+      <RouterLink to="/" class="mobile-nav__logo" @click="close">Ali's Portfolio</RouterLink>
 
       <button
         type="button"
@@ -82,25 +80,25 @@ onUnmounted(() => {
 
         <ul class="mobile-nav__links">
           <li v-for="link in navLinks" :key="link.id">
-            <button
-              type="button"
+            <RouterLink
+              :to="link.path"
               class="mobile-nav__link"
               :class="{ 'mobile-nav__link--active': route.path === link.path }"
-              @click="navigate(link.path)"
+              @click="close"
             >
               {{ link.label }}
-            </button>
+            </RouterLink>
           </li>
         </ul>
 
         <Rule class="mobile-nav__rule" />
         <div class="mobile-nav__cta-wrap">
-          <AppButton variant="outline" class="mobile-nav__cta" show-arrow @click="navigate('/contact')">
+          <AppButton variant="outline" class="mobile-nav__cta" show-arrow to="/contact" @click="close">
             Book a Session
           </AppButton>
           <div class="mobile-nav__foot">
-            <span><b>Karachi</b> · {{ timeLine }}</span>
-            <span>Available · Q3 26</span>
+            <span><b>Rawalpindi</b> · {{ timeLine }}</span>
+            <span>{{ site.availability }}</span>
           </div>
         </div>
       </div>
