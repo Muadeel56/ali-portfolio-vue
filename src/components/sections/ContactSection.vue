@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import emailjs from '@emailjs/browser'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
-import SectionLabel from '../ui/SectionLabel.vue'
+import { contactInfo, socials } from '@/data/contact.js'
+import SectionHeader from '../ui/SectionHeader.vue'
+import Rule from '../ui/Rule.vue'
 
 useScrollReveal('.contact-section .reveal')
 
@@ -10,17 +12,6 @@ useScrollReveal('.contact-section .reveal')
 const EMAILJS_SERVICE_ID  = 'service_1paayws'
 const EMAILJS_TEMPLATE_ID = 'template_biy5qcs'
 const EMAILJS_PUBLIC_KEY  = 'TIMsqqL9WtG6PtJZG'
-
-const contactInfo = [
-  { label: 'Email',     href: 'mailto:ah3781830@gmail.com',        text: 'ah3781830@gmail.com'  },
-  { label: 'WhatsApp',  href: 'https://wa.me/923320599106',        text: '+92 332 0599106'      },
-  { label: 'Instagram', href: 'https://instagram.com/malikali.legacy', text: '@malikali.legacy' },
-]
-
-const socials = [
-  { label: 'Instagram', href: 'https://instagram.com/malikali.legacy' },
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/ali-hassan-0a978821b/'    },
-]
 
 const serviceOptions = [
   'Wedding Films',
@@ -68,17 +59,19 @@ const submit = async () => {
   <section id="contact" class="section contact-section">
     <div class="container">
 
-      <div class="cs__grid">
+      <SectionHeader
+        class="reveal"
+        number="04"
+        eyebrow="Contact"
+        title="Let's Create Something Together"
+        accent="Something"
+      />
+
+      <div class="cs__grid grid-12">
 
         <!-- ── Left column ───────────────────────────── -->
         <div class="cs__left reveal">
-          <SectionLabel text="Contact" />
-          <h2 class="cs__heading">
-            Let's Create<br /><em>Something</em> Together
-          </h2>
-          <span class="cs__rule" aria-hidden="true" />
-
-          <p class="cs__body">
+          <p class="cs__body t-body-large">
             Every great project starts with a conversation. Whether you have a vision or just a feeling — reach out and let's make it real.
           </p>
 
@@ -89,6 +82,7 @@ const submit = async () => {
             </div>
           </div>
 
+          <Rule class="cs__socials-rule" />
           <div class="cs__socials" aria-label="Follow on social media">
             <a
               v-for="social in socials"
@@ -99,21 +93,20 @@ const submit = async () => {
               rel="noopener noreferrer"
             >{{ social.label }}</a>
           </div>
+
+          <p class="cs__status">
+            <span class="cs__dot" aria-hidden="true" />
+            <b>Available</b> · Booking Q1 – Q2 2026
+          </p>
         </div>
 
         <!-- ── Right column — form ───────────────────── -->
         <div class="cs__form-wrap reveal">
-          <!-- Gold corners -->
-          <span class="cs__fc cs__fc--tl" aria-hidden="true" />
-          <span class="cs__fc cs__fc--tr" aria-hidden="true" />
-          <span class="cs__fc cs__fc--bl" aria-hidden="true" />
-          <span class="cs__fc cs__fc--br" aria-hidden="true" />
-
           <div class="cs__form-head">
             <h3 class="cs__form-title">Project Brief</h3>
             <span class="cs__form-meta"><b>Reply</b> within 24h</span>
           </div>
-          <div class="cs__form-divider" aria-hidden="true" />
+          <Rule class="cs__form-divider" />
 
           <!-- Success state -->
           <Transition name="fade">
@@ -222,8 +215,8 @@ const submit = async () => {
 
               <!-- Inline error -->
               <Transition name="fade">
-                <p v-if="status === 'error'" class="cs__error">
-                  Something went wrong — please try again or email directly.
+                <p v-if="status === 'error'" class="cs__error" role="alert">
+                  <span aria-hidden="true">⚠</span> Something went wrong — please try again or email directly.
                 </p>
               </Transition>
 
@@ -231,16 +224,6 @@ const submit = async () => {
           </Transition>
         </div>
 
-      </div>
-
-      <!-- ── Footer bar ──────────────────────────────── -->
-      <div class="cs__foot reveal">
-        <span class="cs__foot-copy">© 2026 Ali's Portfolio. All Rights Reserved.</span>
-        <span class="cs__foot-status">
-          <span class="cs__dot" aria-hidden="true" />
-          <b>Available</b> · Booking Q1 – Q2 2026
-        </span>
-        <span class="cs__foot-tagline">Videography · Editing · Visual Storytelling</span>
       </div>
 
     </div>
@@ -251,158 +234,79 @@ const submit = async () => {
 /* ─── Fade transition ──────────────────────────────────────── */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity var(--dur-base) var(--ease-out-expo);
 }
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
 
-/* ─── Section background decorations ──────────────────────── */
-.contact-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.contact-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(50% 60% at 5% 30%, rgba(201, 168, 76, 0.06) 0%, transparent 60%),
-    radial-gradient(50% 50% at 100% 90%, rgba(201, 168, 76, 0.04) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-.contact-section::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-  background-size: 80px 80px;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black, transparent 80%);
-}
-
-.contact-section .container {
-  position: relative;
-  z-index: 1;
-}
-
-/* ─── 2-column grid ────────────────────────────────────────── */
 .cs__grid {
-  display: grid;
-  gap: var(--space-09);
+  row-gap: var(--space-08);
   align-items: start;
 }
 
 /* ─── Left column ──────────────────────────────────────────── */
-.cs__heading {
-  font-family: var(--serif);
-  font-weight: 700;
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.005em;
-  color: var(--text);
-  margin: var(--space-05) 0 0;
-}
-
-.cs__heading em {
-  color: var(--gold);
-}
-
-.cs__rule {
-  display: block;
-  width: 48px;
-  height: 1px;
-  background: var(--gold);
-  margin-top: var(--space-05);
-}
-
 .cs__body {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--text-dim);
-  max-width: 460px;
-  margin: var(--space-06) 0 0;
+  max-width: 44ch;
 }
 
-/* Contact info list */
 .cs__info {
-  margin-top: var(--space-07);
   display: flex;
   flex-direction: column;
   gap: var(--space-05);
+  margin-top: var(--space-07);
 }
 
 .cs__info-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-02);
 }
 
 .cs__info-lbl {
-  font-weight: 500;
-  font-size: 10px;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold);
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.cs__info-lbl::before {
-  content: '';
-  width: 16px;
-  height: 1px;
-  background: var(--gold);
+  color: var(--muted);
 }
 
 .cs__info-link {
-  font-size: 14px;
-  color: var(--text-dim);
+  font-size: var(--fs-body-lg);
+  color: var(--text);
   text-decoration: none;
-  margin-left: 26px;
-  transition: color 200ms ease;
+  transition: color var(--dur-fast) var(--ease-out-expo);
+  word-break: break-word;
 }
 
 .cs__info-link:hover {
   color: var(--gold);
 }
 
-/* Socials row */
 .cs__socials {
-  margin-top: var(--space-07);
   display: flex;
-  align-items: center;
-  gap: var(--space-04);
+  flex-wrap: wrap;
+  gap: var(--space-05);
+  padding-top: var(--space-05);
 }
 
-.cs__socials::before {
-  content: 'Follow';
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding-right: var(--space-04);
-  border-right: 1px solid var(--border);
-  line-height: 1;
+.cs__socials-rule {
+  margin-top: var(--space-07);
 }
 
 .cs__social-link {
-  font-size: 10px;
+  font-size: var(--fs-label);
+  font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text-dim);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  padding-bottom: 4px;
-  transition: color 200ms ease, border-color 200ms ease;
-  line-height: 1;
+  padding-bottom: 3px;
+  transition:
+    color var(--dur-fast) var(--ease-out-expo),
+    border-color var(--dur-fast) var(--ease-out-expo);
 }
 
 .cs__social-link:hover {
@@ -410,65 +314,78 @@ const submit = async () => {
   border-bottom-color: var(--gold);
 }
 
-/* ─── Form wrapper ─────────────────────────────────────────── */
+.cs__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-03);
+  margin: var(--space-06) 0 0;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cs__status b {
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.cs__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+  animation: cs-blink var(--dur-loop) var(--ease-in-out) infinite;
+}
+
+@keyframes cs-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ─── Form ─────────────────────────────────────────────────── */
 .cs__form-wrap {
-  background: rgba(17, 17, 17, 0.4);
-  border: 1px solid var(--border);
-  padding: var(--space-07) var(--space-06);
   position: relative;
-  isolation: isolate;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: var(--space-06) var(--space-05);
 }
-
-/* Gold corner accents */
-.cs__fc {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.cs__fc--tl { top: -1px; left: -1px;   border-top: 1px solid var(--gold); border-left: 1px solid var(--gold);   }
-.cs__fc--tr { top: -1px; right: -1px;  border-top: 1px solid var(--gold); border-right: 1px solid var(--gold);  }
-.cs__fc--bl { bottom: -1px; left: -1px;  border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold);   }
-.cs__fc--br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold);  }
 
 .cs__form-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: var(--space-02);
+  gap: var(--space-04);
 }
 
 .cs__form-title {
   font-family: var(--serif);
-  font-weight: 700;
-  font-size: 1.375rem;
+  font-weight: 400;
+  font-size: var(--fs-h3);
+  line-height: 1;
   color: var(--text);
   margin: 0;
-  line-height: 1;
 }
 
 .cs__form-meta {
-  font-size: 9px;
-  letter-spacing: 0.25em;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
-  line-height: 1;
 }
 
 .cs__form-meta b {
-  color: var(--gold);
+  color: var(--text-dim);
   font-weight: 500;
 }
 
 .cs__form-divider {
-  height: 1px;
-  background: var(--border);
   margin: var(--space-05) 0 var(--space-06);
 }
 
-/* ─── Form fields ──────────────────────────────────────────── */
 .cs__form {
   display: flex;
   flex-direction: column;
@@ -479,41 +396,38 @@ const submit = async () => {
   position: relative;
 }
 
-/* Numbered label — hidden on mobile, shown md+ */
 .cs__field-num {
   display: none;
   position: absolute;
+  left: calc(-1 * var(--space-07));
   top: 0;
-  left: -28px;
-  font-family: var(--serif);
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
   color: var(--muted);
-  line-height: 1;
 }
 
 .cs__label-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   margin-bottom: var(--space-02);
 }
 
 .cs__field-lbl {
   font-weight: 500;
-  font-size: 9px;
+  font-size: var(--fs-label);
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--muted);
-  line-height: 1;
-  transition: color 200ms ease;
+  color: var(--text-dim);
+  transition: color var(--dur-fast) var(--ease-out-expo);
 }
 
 .cs__opt {
-  font-size: 9px;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
-  line-height: 1;
 }
 
 .cs__field input,
@@ -522,15 +436,14 @@ const submit = async () => {
   width: 100%;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  padding: var(--space-03) 0;
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: var(--fs-body);
   color: var(--text);
   outline: none;
-  transition: border-color 200ms ease;
+  transition: border-color var(--dur-fast) var(--ease-out-expo);
   border-radius: 0;
-  -webkit-appearance: none;
   appearance: none;
 }
 
@@ -545,7 +458,7 @@ const submit = async () => {
 }
 
 .cs__field select option {
-  background: #111;
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -554,7 +467,6 @@ const submit = async () => {
   min-height: 110px;
 }
 
-/* Select arrow */
 .cs__field--select {
   position: relative;
 }
@@ -571,7 +483,7 @@ const submit = async () => {
   pointer-events: none;
 }
 
-/* Focused field state */
+/* Focused field: gold label and underline, no glow */
 .cs__field.is-focused .cs__field-lbl {
   color: var(--gold);
 }
@@ -582,33 +494,19 @@ const submit = async () => {
   border-bottom-color: var(--gold);
 }
 
-/* Gold glow tick at focused field bottom */
-.cs__field.is-focused::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 24px;
-  height: 1px;
-  background: var(--gold-light);
-  box-shadow: 0 0 12px rgba(201, 168, 76, 0.6);
-  z-index: 2;
-}
-
 /* ─── Submit row ───────────────────────────────────────────── */
 .cs__form-foot {
   display: flex;
   flex-direction: column;
-  gap: var(--space-04);
-  margin-top: var(--space-02);
+  gap: var(--space-05);
 }
 
 .cs__privacy {
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: var(--muted);
+  font-size: var(--fs-caption);
   line-height: 1.6;
+  color: var(--muted);
   margin: 0;
+  max-width: 36ch;
 }
 
 .cs__privacy b {
@@ -618,98 +516,50 @@ const submit = async () => {
 
 .cs__submit {
   width: 100%;
-  justify-content: center;
 }
 
 .cs__submit:disabled {
   opacity: 0.6;
-  cursor: not-allowed;
+  cursor: wait;
 }
 
 .cs__error {
-  font-size: 12px;
-  color: #e05c5c;
-  letter-spacing: 0.05em;
+  font-size: var(--fs-body);
+  color: var(--gold-light);
   margin: 0;
-  text-align: center;
 }
 
-/* ─── Success state ────────────────────────────────────────── */
+/* ─── Success ──────────────────────────────────────────────── */
 .cs__success {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: var(--space-09) var(--space-05);
+  align-items: flex-start;
   gap: var(--space-03);
+  padding-block: var(--space-07);
 }
 
 .cs__success-icon {
-  font-size: 32px;
+  font-size: var(--fs-h3);
   color: var(--gold);
   line-height: 1;
 }
 
 .cs__success-title {
   font-family: var(--serif);
-  font-weight: 700;
-  font-size: 1.5rem;
+  font-weight: 400;
+  font-size: var(--fs-h3);
   color: var(--text);
   margin: 0;
 }
 
 .cs__success-body {
-  font-size: 13px;
+  font-size: var(--fs-body);
   color: var(--text-dim);
   margin: 0;
 }
 
 .cs__success-reset {
   margin-top: var(--space-04);
-}
-
-/* ─── Footer bar ───────────────────────────────────────────── */
-.cs__foot {
-  margin-top: var(--space-09);
-  padding-top: var(--space-06);
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-03);
-  text-align: center;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.cs__foot-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--muted);
-}
-
-.cs__foot-status b {
-  color: var(--gold);
-  font-weight: 500;
-}
-
-.cs__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 12px var(--gold);
-  animation: cs-blink 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-@keyframes cs-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
 }
 
 /* ─── Responsive ───────────────────────────────────────────── */
@@ -728,18 +578,19 @@ const submit = async () => {
   .cs__info {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: var(--space-07) var(--space-09);
-  }
-
-  .cs__info-item {
-    min-width: 140px;
+    gap: var(--space-05) var(--space-08);
   }
 }
 
-@media (min-width: 768px) {
-  .cs__grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-08);
+/* Info 1–5, form 7–12 */
+@media (min-width: 900px) {
+  .cs__left {
+    grid-column: 1 / 6;
+  }
+
+  .cs__form-wrap {
+    grid-column: 7 / 13;
+    padding: var(--space-08) var(--space-08) var(--space-08) calc(var(--space-08) + var(--space-04));
   }
 
   .cs__info {
@@ -747,24 +598,9 @@ const submit = async () => {
     gap: var(--space-05);
   }
 
-  .cs__form-wrap {
-    padding: var(--space-08) var(--space-08);
-  }
-
   .cs__field-num {
     display: block;
-  }
-
-  .cs__foot {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
-  }
-}
-
-@media (min-width: 900px) {
-  .cs__grid {
-    gap: var(--space-10);
+    left: calc(-1 * var(--space-06));
   }
 }
 </style>

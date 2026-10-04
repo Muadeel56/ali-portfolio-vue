@@ -3,6 +3,7 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { navLinks } from '@/data/navLinks.js'
 import AppButton from '../ui/AppButton.vue'
+import Rule from '../ui/Rule.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -92,6 +93,7 @@ onUnmounted(() => {
           </li>
         </ul>
 
+        <Rule class="mobile-nav__rule" />
         <div class="mobile-nav__cta-wrap">
           <AppButton variant="outline" class="mobile-nav__cta" show-arrow @click="navigate('/contact')">
             Book a Session
@@ -111,7 +113,7 @@ onUnmounted(() => {
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
   .mobile-nav {
     display: block;
   }
@@ -123,8 +125,8 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 110;
-  height: 64px;
-  padding: 0 24px;
+  height: var(--nav-height-mobile);
+  padding: 0 var(--gutter);
   background: var(--bg);
   display: flex;
   align-items: center;
@@ -133,8 +135,8 @@ onUnmounted(() => {
 
 .mobile-nav__logo {
   font-family: var(--serif);
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 400;
+  font-size: var(--fs-h3);
   line-height: 1;
   color: var(--gold);
   letter-spacing: 0.01em;
@@ -162,7 +164,10 @@ onUnmounted(() => {
   width: 24px;
   height: 1px;
   background: var(--gold);
-  transition: all 250ms ease;
+  transition:
+    top var(--dur-base) var(--ease-out-expo),
+    transform var(--dur-base) var(--ease-out-expo),
+    opacity var(--dur-base) var(--ease-out-expo);
 }
 
 .mobile-nav__hamburger span:nth-child(1) {
@@ -193,35 +198,22 @@ onUnmounted(() => {
 
 .mobile-nav__menu {
   position: fixed;
-  top: 64px;
+  top: var(--nav-height-mobile);
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 109;
   display: flex;
   flex-direction: column;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
   background: var(--bg);
   overflow: hidden;
-}
-
-.mobile-nav__menu::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(255, 255, 255, 0.018) 1px,
-    transparent 0
-  );
-  background-size: 24px 24px;
-  pointer-events: none;
 }
 
 .mobile-nav__eyebrow {
   margin: 24px 0 0;
   font-family: var(--sans);
-  font-size: 10px;
+  font-size: var(--fs-label);
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -258,13 +250,13 @@ onUnmounted(() => {
 .mobile-nav__link {
   font-family: var(--sans);
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-label);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-dim);
   text-decoration: none;
   cursor: pointer;
-  transition: color 200ms ease;
+  transition: color var(--dur-fast) var(--ease-out-expo);
   position: relative;
   padding: 4px 0;
   border: none;
@@ -287,13 +279,17 @@ onUnmounted(() => {
   background: var(--gold);
 }
 
+.mobile-nav__rule {
+  position: relative;
+  z-index: 2;
+}
+
 .mobile-nav__cta-wrap {
   padding: 24px 0 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  border-top: 1px solid var(--border);
   position: relative;
   z-index: 2;
 }
@@ -307,7 +303,7 @@ onUnmounted(() => {
   justify-content: space-between;
   width: 100%;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
@@ -321,8 +317,8 @@ onUnmounted(() => {
 .menu-enter-active,
 .menu-leave-active {
   transition:
-    opacity 250ms ease,
-    transform 250ms ease;
+    opacity var(--dur-base) var(--ease-out-expo),
+    transform var(--dur-base) var(--ease-out-expo);
 }
 
 .menu-enter-from,

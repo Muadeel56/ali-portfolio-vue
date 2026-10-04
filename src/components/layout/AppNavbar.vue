@@ -41,10 +41,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header
-    class="nav"
-    :class="isScrolled ? 'nav--scrolled' : 'nav--transparent'"
-  >
+  <header class="nav" :class="{ 'nav--scrolled': isScrolled }">
     <button type="button" class="nav__logo" @click="router.push('/')">Ali's Portfolio</button>
 
     <ul class="nav__links">
@@ -79,34 +76,25 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 100;
-  height: 72px;
-  padding: 0 clamp(1.5rem, 5.5vw, 5rem);
+  height: var(--nav-height-desktop);
+  padding: 0 var(--gutter);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  transition:
-    background 200ms ease,
-    border-color 200ms ease,
-    backdrop-filter 200ms ease;
-}
-
-.nav--transparent {
-  background: transparent;
+  background: var(--bg);
   border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-base) var(--ease-out-expo);
 }
 
 .nav--scrolled {
-  background: rgba(8, 8, 8, 0.92);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--rule);
 }
 
 .nav__logo {
   justify-self: start;
   font-family: var(--serif);
-  font-weight: 700;
-  font-size: 22px;
+  font-weight: 400;
+  font-size: var(--fs-h3);
   line-height: 1;
   color: var(--gold);
   letter-spacing: 0.01em;
@@ -114,7 +102,7 @@ onUnmounted(() => {
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  transition: color 200ms ease;
+  transition: color var(--dur-fast) var(--ease-out-expo);
   background: none;
   border: none;
   padding: 0;
@@ -137,13 +125,13 @@ onUnmounted(() => {
 .nav__link {
   font-family: var(--sans);
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-label);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-dim);
   text-decoration: none;
   cursor: pointer;
-  transition: color 200ms ease;
+  transition: color var(--dur-fast) var(--ease-out-expo);
   position: relative;
   padding: 4px 0;
   border: none;
@@ -176,7 +164,7 @@ onUnmounted(() => {
 
 .nav__time {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
@@ -188,10 +176,9 @@ onUnmounted(() => {
   color: var(--text-dim);
   font-weight: 500;
   display: block;
-  font-size: 9px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
   .nav {
     display: none;
   }

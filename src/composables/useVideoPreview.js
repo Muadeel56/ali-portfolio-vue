@@ -1,7 +1,11 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 // Shared across every caller so only one preview can play at a time.
-const activePreviewId = ref(null)
+export const activePreviewId = ref(null)
+
+// Set by useVideoPreview() on mount; read by the hover handlers below.
+let enabled = false
+let canHover = false
 
 const MIN_RATIO = 0.6
 
@@ -19,12 +23,19 @@ export function stopPreview() {
   activePreviewId.value = null
 }
 
+// Hover handlers for individual cards (desktop only; touch uses the observer).
+export function previewEnter(id) {
+  if (enabled && canHover) activePreviewId.value = id
+}
+
+export function previewLeave(id) {
+  if (canHover && activePreviewId.value === id) activePreviewId.value = null
+}
+
 // Hover-to-preview on desktop; on touch devices the single card most in view previews.
 // Cards matched by `selector` must carry a `data-id` attribute.
 // Previews are disabled entirely for data saver and reduced motion.
 export function useVideoPreview(selector) {
-  const enabled = ref(false)
-  let canHover = false
   let observer
   const ratios = new Map()
 
@@ -43,8 +54,9 @@ export function useVideoPreview(selector) {
   onMounted(() => {
     const saveData = navigator.connection?.saveData
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
-    enabled.value = !saveData && !reducedMotion
-    if (!enabled.value) return
+    enabled = !saveData && !reducedMotion
+    canHover = false
+    if (!enabled) return
 
     canHover = matchMedia('(hover: hover) and (pointer: fine)').matches
     if (canHover) return
@@ -66,13 +78,5 @@ export function useVideoPreview(selector) {
     activePreviewId.value = null
   })
 
-  const onEnter = (id) => {
-    if (enabled.value && canHover) activePreviewId.value = id
-  }
-
-  const onLeave = (id) => {
-    if (canHover && activePreviewId.value === id) activePreviewId.value = null
-  }
-
-  return { activePreviewId, onEnter, onLeave }
+  return { activePreviewId, onEnter: previewEnter, onLeave: previewLeave }
 }

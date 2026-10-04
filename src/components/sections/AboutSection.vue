@@ -1,8 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useScrollReveal } from '@/composables/useScrollReveal.js'
-import SectionLabel from '../ui/SectionLabel.vue'
+import SectionHeader from '../ui/SectionHeader.vue'
 import AppButton from '../ui/AppButton.vue'
+import Rule from '../ui/Rule.vue'
 
 const router = useRouter()
 const cdnUrl = import.meta.env.VITE_CDN_URL
@@ -16,136 +17,125 @@ const scrollTo = (path) => {
 
 <template>
   <section id="about" class="section about-section">
-    <div class="about-section__inner about-grid">
-      <div class="about-section__media reveal">
-        <div class="about-section__frame-wrap">
+    <div class="container">
+      <SectionHeader
+        class="reveal"
+        number="01"
+        eyebrow="About"
+        title="Create and combine frames"
+        accent="frames"
+      />
+
+      <div class="about-section__grid grid-12">
+        <div class="about-section__text reveal">
+          <p class="about-section__body t-body-large">
+            Every frame is a decision. I work at the intersection of technical craft and raw emotion —
+            composing shots that don't just document a moment, but make you feel it.
+          </p>
+          <p class="about-section__body t-body-large">
+            From intimate weddings and brand campaigns to cinematic short films, I bring a director's
+            eye and a documentarian's patience to every project. Six years in, the obsession with
+            light, motion, and storytelling hasn't dimmed.
+          </p>
+
+          <Rule class="about-section__rule" />
+
+          <div class="about-section__stats">
+            <span class="about-section__stat">200+ Weddings</span>
+            <span class="about-section__stat-sep" aria-hidden="true">·</span>
+            <span class="about-section__stat">50+ Events</span>
+            <span class="about-section__stat-sep" aria-hidden="true">·</span>
+            <span class="about-section__stat">6+ Years</span>
+          </div>
+
+          <div class="about-section__ctas">
+            <AppButton variant="outline" show-arrow @click="scrollTo('/videography')">
+              See My Work
+            </AppButton>
+          </div>
+        </div>
+
+        <figure class="about-section__media reveal">
           <div class="about-section__image">
             <img
               class="about-section__photo"
               :src="`${cdnUrl}/photos/ali-profile.jpeg`"
+              width="900"
+              height="1200"
+              decoding="async"
               alt="Ali — Photographer & Videographer"
             />
-            <span class="about-section__caption">— Ali · Self portrait</span>
-            <span class="about-section__corner about-section__corner--tl" aria-hidden="true" />
-            <span class="about-section__corner about-section__corner--br" aria-hidden="true" />
+            <div class="about-section__badge">
+              <p class="about-section__badge-num">6+</p>
+              <p class="about-section__badge-lbl">Years</p>
+            </div>
           </div>
-
-          <div class="about-section__badge">
-            <p class="about-section__badge-num">6+</p>
-            <p class="about-section__badge-lbl">Years</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="about-section__text reveal">
-        <SectionLabel text="About" />
-
-        <h2 class="about-section__heading">
-          Create and combine
-          <em>frames</em>
-        </h2>
-
-        <span class="about-section__rule" aria-hidden="true" />
-
-        <p class="about-section__body">
-          Every frame is a decision. I work at the intersection of technical craft and raw emotion —
-          composing shots that don't just document a moment, but make you feel it.
-        </p>
-        <p class="about-section__body">
-          From intimate weddings and brand campaigns to cinematic short films, I bring a director's
-          eye and a documentarian's patience to every project. Six years in, the obsession with
-          light, motion, and storytelling hasn't dimmed.
-        </p>
-
-        <div class="about-section__stats">
-          <span class="about-section__stat">200+ Weddings</span>
-          <span class="about-section__stat-sep" aria-hidden="true">·</span>
-          <span class="about-section__stat">50+ Events</span>
-          <span class="about-section__stat-sep" aria-hidden="true">·</span>
-          <span class="about-section__stat">6+ Years</span>
-        </div>
-
-        <div class="about-section__ctas">
-          <AppButton variant="outline" show-arrow @click="scrollTo('/videography')">
-            See My Work
-          </AppButton>
-        </div>
+          <figcaption class="about-section__caption">Ali · 2026 · Self portrait</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-.about-section {
-  position: relative;
-  padding-block: clamp(80px, 12vw, 160px);
+.about-section__grid {
+  row-gap: var(--space-08);
+  align-items: start;
 }
 
-.about-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(60% 60% at 75% 30%, rgba(201, 168, 76, 0.04) 0%, transparent 60%),
-    radial-gradient(80% 60% at 10% 90%, rgba(201, 168, 76, 0.025) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
+/* ── Text column ── */
+.about-section__body {
+  max-width: 52ch;
 }
 
-.about-section__inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1280px;
-  margin-inline: auto;
+.about-section__body + .about-section__body {
+  margin-top: var(--space-04);
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+.about-section__rule {
+  margin-top: var(--space-07);
+}
+
+.about-section__stats {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  gap: var(--space-02) var(--space-03);
+  padding-top: var(--space-06);
+}
+
+.about-section__stat {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.about-section__stat-sep {
+  color: var(--gold);
+}
+
+.about-section__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-04);
+  margin-top: var(--space-06);
 }
 
 /* ── Image column ── */
 .about-section__media {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.about-section__frame-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
+  margin: 0;
 }
 
 .about-section__image {
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  background: radial-gradient(80% 60% at 50% 40%, #222020 0%, #1a1a1a 60%, #131313 100%);
-  overflow: hidden;
-}
-
-.about-section__image::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.012) 0 1px,
-    transparent 1px 4px
-  );
-  pointer-events: none;
-}
-
-.about-section__image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(closest-side at 50% 60%, transparent 35%, rgba(0, 0, 0, 0.5) 100%);
-  pointer-events: none;
+  background: var(--surface-2);
+  outline: 1px solid var(--gold);
+  outline-offset: 1px;
 }
 
 .about-section__photo {
@@ -155,206 +145,73 @@ const scrollTo = (path) => {
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  display: block;
-}
-
-.about-section__caption {
-  position: absolute;
-  bottom: 24px;
-  left: 24px;
-  font-family: var(--sans);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  z-index: 2;
-}
-
-.about-section__corner {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  pointer-events: none;
-  z-index: 3;
-}
-
-.about-section__corner--tl {
-  top: -1px;
-  left: -1px;
-  border-top: 1px solid var(--gold);
-  border-left: 1px solid var(--gold);
-}
-
-.about-section__corner--br {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 1px solid var(--gold);
-  border-right: 1px solid var(--gold);
 }
 
 .about-section__badge {
   position: absolute;
-  bottom: -24px;
-  right: -24px;
-  background: var(--gold);
-  padding: 20px 28px;
-  text-align: center;
-  color: var(--bg);
-  z-index: 4;
-  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.6);
+  bottom: 0;
+  right: 0;
+  z-index: 2;
   min-width: 96px;
+  padding: var(--space-04) var(--space-05);
+  text-align: center;
+  background: var(--bg);
+  border-top: 1px solid var(--gold);
+  border-left: 1px solid var(--gold);
 }
 
 .about-section__badge-num {
   font-family: var(--serif);
-  font-weight: 700;
-  font-size: 32px;
+  font-weight: 400;
+  font-size: var(--fs-h3);
   line-height: 1;
-  color: var(--bg);
+  color: var(--gold);
   margin: 0;
 }
 
 .about-section__badge-lbl {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 10px;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--bg);
-  margin: 6px 0 0;
+  color: var(--text-dim);
+  margin: var(--space-02) 0 0;
   line-height: 1;
 }
 
-/* ── Text column ── */
-.about-section__heading {
-  font-family: var(--serif);
-  font-weight: 700;
-  font-size: clamp(2rem, 5vw, 52px);
-  line-height: 1.1;
-  letter-spacing: -0.005em;
-  margin: 24px 0 0;
-  color: var(--text);
-}
-
-.about-section__heading em {
-  display: block;
-  color: var(--gold);
-  font-weight: 700;
-}
-
-.about-section__rule {
-  display: block;
-  width: 48px;
-  height: 1px;
-  background: var(--gold);
-  margin-top: 24px;
-}
-
-.about-section__body {
-  font-family: var(--sans);
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--text-dim);
-  max-width: 420px;
-  margin: 24px 0 0;
-}
-
-.about-section__body + .about-section__body {
-  margin-top: 16px;
-}
-
-.about-section__stats {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-  border-top: 1px solid var(--border);
-  padding-top: 32px;
-  margin-top: 40px;
-  max-width: 480px;
-}
-
-.about-section__stat {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.15em;
+.about-section__caption {
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--text-dim);
-  white-space: nowrap;
+  color: var(--muted);
+  margin-top: var(--space-04);
 }
 
-.about-section__stat-sep {
-  color: var(--gold);
-  font-size: 14px;
-  line-height: 1;
-}
-
-.about-section__ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 32px;
-}
-
-/* ── Mobile ── */
-@media (max-width: 768px) {
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
-
-  .about-section__media {
-    margin-bottom: 16px;
-  }
-
-  .about-section__corner {
-    width: 40px;
-    height: 40px;
-  }
-
-  .about-section__caption {
-    bottom: 16px;
-    left: 16px;
-    font-size: 9px;
-  }
-
-  .about-section__badge {
-    bottom: -20px;
-    right: -8px;
-    padding: 16px 22px;
-    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.6);
-  }
-
-  .about-section__badge-num {
-    font-size: 28px;
-  }
-
-  .about-section__badge-lbl {
-    font-size: 9px;
-  }
-
-  .about-section__heading {
-    font-size: 38px;
-  }
-
-  .about-section__stats {
-    gap: 8px 10px;
-    padding-top: 28px;
-  }
-
-  .about-section__stat {
-    font-size: 10px;
-  }
-
+@media (max-width: 639px) {
   .about-section__ctas {
     flex-direction: column;
   }
 
   .about-section__ctas :deep(.btn) {
     width: 100%;
-    justify-content: center;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .about-section__media {
+    grid-column: 3 / 11;
+  }
+}
+
+/* Asymmetric split: text 1–6, portrait 8–12 */
+@media (min-width: 900px) {
+  .about-section__text {
+    grid-column: 1 / 7;
+  }
+
+  .about-section__media {
+    grid-column: 8 / 13;
   }
 }
 </style>
